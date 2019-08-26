@@ -3,6 +3,7 @@ package com.pmfgraduate.service.impl;
 import java.io.IOException;
 import java.io.InputStream;
 
+import com.pmfgraduate.mapper.UserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.gridfs.GridFsOperations;
 import org.springframework.http.HttpStatus;
@@ -27,79 +28,82 @@ import com.pmfgraduate.dto.RegisterDTO;
 import com.pmfgraduate.exception.PmfGraduateException;
 import com.pmfgraduate.model.User;
 import com.pmfgraduate.repository.UserRepository;
-import com.pmfgraduate.security.auth.AuthenticatedUser;
-import com.pmfgraduate.security.auth.JwtTokenProvider;
+import com.pmfgraduate.security.AuthenticatedUser;
+import com.pmfgraduate.security.JwtTokenProvider;
 import com.pmfgraduate.service.UserService;
 
 @Service
 @Transactional
 public class UserServiceImpl implements UserService {
 
-	@Autowired
-	UserRepository userRepository;
-	@Autowired
-	PasswordEncoder passwordEncoder;
-	@Autowired
-	AuthenticationManager authenticationManager;
-	@Autowired
-	UserDetailsService userDetailsService;
-	@Autowired
-	JwtTokenProvider jwtProvired;
-	@Autowired
-	AuthenticatedUser authentication;
-	@Autowired
-	GridFsOperations gridFsOperations;
+    @Autowired
+    UserRepository userRepository;
+    @Autowired
+    PasswordEncoder passwordEncoder;
+    @Autowired
+    AuthenticationManager authenticationManager;
+    @Autowired
+    UserDetailsService userDetailsService;
+    @Autowired
+    JwtTokenProvider jwtProvired;
+    @Autowired
+    AuthenticatedUser authentication;
+    @Autowired
+    GridFsOperations gridFsOperations;
+    @Autowired
+    UserMapper userMapper;
 
-	@Override
-	public JwtAuthenticationResponse login(LoginDTO userRequest) {
-		try {
-			Authentication authentication = authenticationManager.authenticate(
-					new UsernamePasswordAuthenticationToken(userRequest.getEmail(), userRequest.getPassword()));
-			SecurityContextHolder.getContext().setAuthentication(authentication);
+    @Override
+    public JwtAuthenticationResponse login(LoginDTO userRequest) {
+        try {
+            Authentication authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(userRequest.getEmail(), userRequest.getPassword()));
+            SecurityContextHolder.getContext().setAuthentication(authentication);
 
-			UserDetails userDetails = userDetailsService.loadUserByUsername(userRequest.getEmail());
+            UserDetails userDetails = userDetailsService.loadUserByUsername(userRequest.getEmail());
 
-			String jwt = jwtProvired.createToken(userDetails);
+            String jwt = jwtProvired.createToken(userDetails);
 
-			return new JwtAuthenticationResponse(jwt);
-		} catch (BadCredentialsException e) {
-			throw new PmfGraduateException(HttpStatus.BAD_REQUEST, "Incorrect password!");
-		}
-	}
+            return new JwtAuthenticationResponse(jwt);
+        } catch (BadCredentialsException e) {
+            throw new PmfGraduateException(HttpStatus.BAD_REQUEST, "Incorrect password!");
+        }
+    }
 
-	@Override
-	public boolean register(RegisterDTO userRequest) {
-		if (userRepository.findByEmail(userRequest.getEmail()) != null) {
-			throw new PmfGraduateException(HttpStatus.BAD_REQUEST, "Email already exist");
-		} else {
-			User user = new User();
-			user.setFirstName(userRequest.getFirstName());
-			user.setLastName(userRequest.getLastName());
-			user.setEmail(userRequest.getEmail());
-			user.setPassword(passwordEncoder.encode(userRequest.getPassword()));
-			user.setRole("USER");
+    @Override
+    public boolean register(RegisterDTO userRequest) {
+        if (userRepository.findByEmail(userRequest.getEmail()) != null) {
+            throw new PmfGraduateException(HttpStatus.BAD_REQUEST, "Email already exist");
+        } else {
+            User user = userMapper.map(userRequest);
+            user.setPassword(passwordEncoder.encode(userRequest.getPassword()));
+            user.setRole("USER");
 
-			userRepository.save(user);
+            user = userRepository.save(user);
 
-			return true;
-		}
-	}
+            if (user != null) {
+                return true;
+            } else {
+				throw new PmfGraduateException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to register!");
+            }
+        }
+    }
 
-	@Override
-	public boolean saveFile(MultipartFile file) throws IOException {
-		try {
-			DBObject metaData = new BasicDBObject();
-			metaData.put("organization", "DMI");
+    @Override
+    public boolean saveFile(MultipartFile file) throws IOException {
+        try {
+            DBObject metaData = new BasicDBObject();
+            metaData.put("organization", "DMI");
 
-			InputStream inputStream = file.getInputStream();
-			metaData.put("type", file.getContentType());
+            InputStream inputStream = file.getInputStream();
+            metaData.put("type", file.getContentType());
 
-			gridFsOperations.store(inputStream, file.getOriginalFilename(), file.getContentType(), metaData);
+            gridFsOperations.store(inputStream, file.getOriginalFilename(), file.getContentType(), metaData);
 
-			return true;
-		} catch (MultipartException e) {
-			throw new PmfGraduateException(HttpStatus.BAD_REQUEST, "Some problem...");
-		}
-	}
+            return true;
+        } catch (MultipartException e) {
+            throw new PmfGraduateException(HttpStatus.BAD_REQUEST, "Some problem...");
+        }
+    }
 
 }

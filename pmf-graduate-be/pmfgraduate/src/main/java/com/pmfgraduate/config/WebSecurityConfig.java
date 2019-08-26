@@ -1,4 +1,4 @@
-package com.pmfgraduate.security;
+package com.pmfgraduate.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -18,9 +18,9 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
-import com.pmfgraduate.security.auth.JwtAuthenticationEntryPoint;
-import com.pmfgraduate.security.auth.JwtAuthenticationFilter;
-import com.pmfgraduate.security.auth.JwtTokenProvider;
+import com.pmfgraduate.security.JwtAuthenticationEntryPoint;
+import com.pmfgraduate.security.JwtAuthenticationFilter;
+import com.pmfgraduate.security.JwtTokenProvider;
 import com.pmfgraduate.service.impl.CustomUserDetailsService;
 
 @Configuration
@@ -70,7 +70,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	protected void configure(HttpSecurity http) throws Exception {
 		http.cors().and().csrf().disable().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 				.and().exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and().authorizeRequests()
-				.antMatchers("/login", "/register", "/saveFile").permitAll().anyRequest().authenticated().and()
+				.antMatchers("/api/auth/**").permitAll().anyRequest().authenticated().and()
 				.addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), BasicAuthenticationFilter.class);
 	}
 

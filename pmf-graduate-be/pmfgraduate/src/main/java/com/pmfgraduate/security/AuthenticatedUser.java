@@ -1,4 +1,4 @@
-package com.pmfgraduate.security.auth;
+package com.pmfgraduate.security;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;

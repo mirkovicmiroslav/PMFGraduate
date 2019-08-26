@@ -13,7 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.pmfgraduate.service.UserService;
 
-@RequestMapping("api/admin/files")
+@RequestMapping("api/admin/")
 @RestController
 public class FilesController {
 

@@ -1,0 +1,124 @@
+<div class="wrapper fadeInDown">
+  <div id="formContent">
+    <div class="fadeIn first">
+      <h2>Register</h2>
+    </div>
+    <form #signUpForm="ngForm">
+      <input
+        type="text"
+        name="firstName"
+        [(ngModel)]="userData.firstName"
+        id="firstName"
+        #firstName="ngModel"
+        class="fadeIn second"
+        placeholder="First name *"
+        required
+      />
+      <span
+        *ngIf="firstName.errors?.required && firstName.touched"
+        class="text-danger"
+        style="text-align: center; display:block;"
+      >
+        First Name is required
+      </span>
+      <input
+        type="text"
+        name="lastName"
+        [(ngModel)]="userData.lastName"
+        id="lastName"
+        #lastName="ngModel"
+        class="fadeIn second"
+        placeholder="Last name *"
+        required
+      />
+      <span
+        *ngIf="lastName.errors?.required && lastName.touched"
+        class="text-danger"
+        style="text-align: center; display:block;"
+      >
+        Last Name is required
+      </span>
+      <input
+        type="email"
+        name="email"
+        [(ngModel)]="userData.email"
+        id="email"
+        #email="ngModel"
+        class="fadeIn second"
+        placeholder="Email *"
+        email
+        required
+      />
+      <span
+        *ngIf="email.errors?.required && email.touched"
+        class="text-danger"
+        style="text-align: center; display:block;"
+        >Email address is required</span
+      >
+      <span
+        *ngIf="email.errors?.email && email.touched"
+        class="text-danger"
+        style="text-align: center; display:block;"
+        >Email must be a valid email address</span
+      >
+      <input
+        type="password"
+        name="password"
+        [(ngModel)]="userData.password"
+        id="password"
+        #password="ngModel"
+        class="fadeIn second"
+        placeholder="Password *"
+        minlength="6"
+        required
+      />
+      <span
+        *ngIf="password.errors?.required && password.touched"
+        class="text-danger"
+        style="text-align: center; display:block;"
+        >Password is required</span
+      >
+      <span
+        *ngIf="password.errors?.minlength"
+        class="text-danger"
+        style="text-align: center; display:block;"
+        >Password must be at least 6 characters</span
+      >
+      <input
+        type="password"
+        name="repeatPassword"
+        [(ngModel)]="rPassword"
+        id="repeatPassword"
+        #repeatPassword="ngModel"
+        class="fadeIn second"
+        placeholder="Password confirm *"
+        minlength="6"
+        required
+      />
+      <span
+        *ngIf="repeatPassword.errors?.required && repeatPassword.touched"
+        class="text-danger"
+        style="text-align: center; display:block;"
+      >
+        Repeat password is required
+      </span>
+      <span
+        *ngIf="repeatPassword.errors?.minlength"
+        class="text-danger"
+        style="text-align: center; display:block;"
+        >Password must be at least 6 characters</span
+      >
+      <button
+        [disabled]="!signUpForm.valid"
+        type="submit"
+        class="fadeIn fourth"
+        (click)="onRegister()"
+      >
+        Register
+      </button>
+    </form>
+    <div id="formFooter">
+      Have an account? <a class="underlineHover" routerLink="/login">Login</a>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,60 @@
+<div class="wrapper fadeInDown">
+  <div id="formContent">
+    <div class="fadeIn first">
+      <h2>Login</h2>
+    </div>
+    <form #loginForm="ngForm">
+      <div>
+        <input
+          type="text"
+          class="fadeIn second"
+          name="email"
+          id="email"
+          [(ngModel)]="loginData.email"
+          #email="ngModel"
+          placeholder="Email"
+          required
+        />
+        <span
+          class="validation-message"
+          style="text-align: center; display:block;"
+          *ngIf="email.errors?.required && email.touched"
+          class="text-danger"
+          >Email is required</span
+        >
+      </div>
+      <div>
+        <input
+          type="password"
+          id="password"
+          name="password"
+          class="fadeIn third"
+          [(ngModel)]="loginData.password"
+          #password="ngModel"
+          placeholder="Password"
+          required
+        />
+        <span
+          class="validation-message"
+          style="text-align: center; display:block;"
+          *ngIf="password.errors?.required && password.touched"
+          class="text-danger"
+          >Password is required</span
+        >
+      </div>
+      <button
+        [disabled]="!loginForm.valid"
+        type="submit"
+        class="fadeIn fourth"
+        value="Log in"
+        (click)="onLogin()"
+      >
+        Log in
+      </button>
+    </form>
+    <div id="formFooter">
+      Don't have account?
+      <a class="underlineHover" routerLink="/register">Register</a>
+    </div>
+  </div>
+</div>

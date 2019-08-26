@@ -1,4 +1,4 @@
-package com.pmfgraduate.security.auth;
+package com.pmfgraduate.security;
 
 import java.util.Date;
 
