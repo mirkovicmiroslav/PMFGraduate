@@ -31,10 +31,7 @@ export class RegisterComponent implements OnInit {
           this.router.navigate(["/login"]);
         },
         error => {
-          this.toastr.error(
-            "Email address already exist",
-            "Unable to register"
-          );
+          this.toastr.error(error.error, "Unable to register");
         }
       );
     }

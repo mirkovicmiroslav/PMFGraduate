@@ -8,7 +8,7 @@ import { ToastrService } from "ngx-toastr";
 @Component({
   selector: "app-login",
   templateUrl: "./login.component.html",
-  styleUrls: ["./login.component.css"]
+  styleUrls: ["../register/register.component.css"]
 })
 export class LoginComponent implements OnInit {
   loginData: User = new User();
@@ -29,7 +29,7 @@ export class LoginComponent implements OnInit {
         this.router.navigate(["/"]);
       },
       error => {
-        this.toastr.error("Incorrect email or password", "Unable to login");
+        this.toastr.error(error.error, "Unable to login");
       }
     );
   }

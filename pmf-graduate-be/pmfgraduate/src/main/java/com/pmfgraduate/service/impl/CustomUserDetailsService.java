@@ -15,7 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.pmfgraduate.model.User;
 import com.pmfgraduate.repository.UserRepository;
 
-@Service
+@Service("userDetailsService")
 public class CustomUserDetailsService implements UserDetailsService {
 
 	@Autowired

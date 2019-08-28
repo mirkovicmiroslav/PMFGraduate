@@ -5,6 +5,7 @@ import java.io.InputStream;
 
 import com.pmfgraduate.mapper.UserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.mongodb.gridfs.GridFsOperations;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -43,6 +44,7 @@ public class UserServiceImpl implements UserService {
     @Autowired
     AuthenticationManager authenticationManager;
     @Autowired
+    @Qualifier("userDetailsService")
     UserDetailsService userDetailsService;
     @Autowired
     JwtTokenProvider jwtProvired;
