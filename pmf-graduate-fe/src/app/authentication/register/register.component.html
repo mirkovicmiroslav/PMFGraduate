@@ -1,7 +1,7 @@
 <div class="wrapper fadeInDown">
   <div id="formContent">
     <div class="fadeIn first">
-      <h2>Register</h2>
+      <h2>Registracija</h2>
     </div>
     <form #signUpForm="ngForm">
       <input
@@ -11,15 +11,15 @@
         id="firstName"
         #firstName="ngModel"
         class="fadeIn second"
-        placeholder="First name *"
+        placeholder="Ime *"
         required
       />
       <span
-        *ngIf="firstName.errors?.required && firstName.touched"
+        *ngIf="firstName.hasError('required') && firstName.touched"
         class="text-danger"
         style="text-align: center; display:block;"
       >
-        First Name is required
+        Ime je obavezno
       </span>
       <input
         type="text"
@@ -28,15 +28,15 @@
         id="lastName"
         #lastName="ngModel"
         class="fadeIn second"
-        placeholder="Last name *"
+        placeholder="Prezime *"
         required
       />
       <span
-        *ngIf="lastName.errors?.required && lastName.touched"
+        *ngIf="lastName.hasError('required') && lastName.touched"
         class="text-danger"
         style="text-align: center; display:block;"
       >
-        Last Name is required
+        Prezime je obavezno
       </span>
       <input
         type="email"
@@ -50,16 +50,16 @@
         required
       />
       <span
-        *ngIf="email.errors?.required && email.touched"
+        *ngIf="email.hasError('required') && email.touched"
         class="text-danger"
         style="text-align: center; display:block;"
-        >Email address is required</span
+        >Email je obavezan</span
       >
       <span
-        *ngIf="email.errors?.email && email.touched"
+        *ngIf="email.hasError('email') && email.touched"
         class="text-danger"
         style="text-align: center; display:block;"
-        >Email must be a valid email address</span
+        >Email mora biti validna email adresa</span
       >
       <input
         type="password"
@@ -68,21 +68,21 @@
         id="password"
         #password="ngModel"
         class="fadeIn second"
-        placeholder="Password *"
+        placeholder="Lozinka *"
         minlength="6"
         required
       />
       <span
-        *ngIf="password.errors?.required && password.touched"
+        *ngIf="password.hasError('required') && password.touched"
         class="text-danger"
         style="text-align: center; display:block;"
-        >Password is required</span
+        >Lozinka je obavezna</span
       >
       <span
-        *ngIf="password.errors?.minlength"
+        *ngIf="password.hasError('minLength')"
         class="text-danger"
         style="text-align: center; display:block;"
-        >Password must be at least 6 characters</span
+        >Lozinka mora sadrzati najmanje 6 karaktera</span
       >
       <input
         type="password"
@@ -91,22 +91,22 @@
         id="repeatPassword"
         #repeatPassword="ngModel"
         class="fadeIn second"
-        placeholder="Password confirm *"
+        placeholder="Ponovi lozinku *"
         minlength="6"
         required
       />
       <span
-        *ngIf="repeatPassword.errors?.required && repeatPassword.touched"
+        *ngIf="repeatPassword.hasError('required') && repeatPassword.touched"
         class="text-danger"
         style="text-align: center; display:block;"
       >
-        Repeat password is required
+        Ponovna lozinka je obavezna
       </span>
       <span
-        *ngIf="repeatPassword.errors?.minlength"
+        *ngIf="repeatPassword.hasError('minLength')"
         class="text-danger"
         style="text-align: center; display:block;"
-        >Password must be at least 6 characters</span
+        >Lozinka mora sadrzati najmanje 6 karaktera</span
       >
       <button
         [disabled]="!signUpForm.valid"
@@ -114,11 +114,11 @@
         class="fadeIn fourth"
         (click)="onRegister()"
       >
-        Register
+        Registruj se
       </button>
     </form>
     <div id="formFooter">
-      Have an account? <a class="underlineHover" routerLink="/login">Login</a>
+      Imas nalog? <a class="underlineHover" routerLink="/login">Login</a>
     </div>
   </div>
 </div>

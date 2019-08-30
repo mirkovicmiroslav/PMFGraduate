@@ -27,40 +27,43 @@
     <div class="collapse navbar-collapse my-2 my-lg-0" id="navbarResponsive">
       <ul class="navbar-nav ml-auto">
         <li
+          *ngIf="!authService.isAuthenticated()"
           class="nav-item"
           data-toggle="collapse"
           data-target=".navbar-collapse.show"
         >
-          <a
-            *ngIf="!authService.isAuthenticated()"
-            class="btn btn-link"
-            routerLink="/login"
-          >
-            Login
+          <a class="btn btn-link" routerLink="/login">
+            Prijava
           </a>
         </li>
         <li
+          *ngIf="!authService.isAuthenticated()"
           class="nav-item"
           data-toggle="collapse"
           data-target=".navbar-collapse.show"
         >
-          <a
-            *ngIf="!authService.isAuthenticated()"
-            class="btn btn-link"
-            routerLink="/register"
-          >
-            Register
+          <a class="btn btn-link" routerLink="/register">
+            Registracija
           </a>
         </li>
-        <li class="nav-item">
+        <li
+          *ngIf="authService.isAdmin()"
+          class="nav-item"
+          data-toggle="collapse"
+          data-target=".navbar-collapse.show"
+        >
+          <a class="btn btn-link" routerLink="/admin/add-graduate-paper">
+            Dodaj diplomski rad
+          </a>
+        </li>
+        <li *ngIf="authService.isAuthenticated()" class="nav-item">
           <button
-            *ngIf="authService.isAuthenticated()"
             type="submit"
             class="btn btn-link"
             (click)="onLogout()"
             style="color: rgba(255, 255, 255, 0.5)"
           >
-            Logout
+            Odjavi se
           </button>
         </li>
       </ul>

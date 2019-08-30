@@ -9,9 +9,6 @@ import { JwtHelperService } from "@auth0/angular-jwt";
   providedIn: "root"
 })
 export class AuthenticationService {
-  helper = new JwtHelperService();
-  decodedToken = this.helper.decodeToken(localStorage.getItem("token"));
-
   constructor(private http: HttpClient) {}
 
   public login(loginData: User): Observable<any> {
@@ -30,8 +27,10 @@ export class AuthenticationService {
   }
 
   public isUser() {
-    if (this.decodedToken != null) {
-      if (this.decodedToken.roles.authority[0] == "USER") {
+    const helper = new JwtHelperService();
+    const decodedToken = helper.decodeToken(localStorage.getItem("token"));
+    if (decodedToken != null) {
+      if (decodedToken.roles[0].authority == "USER") {
         return true;
       }
     }
@@ -39,8 +38,10 @@ export class AuthenticationService {
   }
 
   public isAdmin() {
-    if (this.decodedToken != null) {
-      if (this.decodedToken.roles.authority[0] == "ADMIN") {
+    const helper = new JwtHelperService();
+    const decodedToken = helper.decodeToken(localStorage.getItem("token"));
+    if (decodedToken != null) {
+      if (decodedToken.roles[0].authority == "ADMIN") {
         return true;
       }
     }

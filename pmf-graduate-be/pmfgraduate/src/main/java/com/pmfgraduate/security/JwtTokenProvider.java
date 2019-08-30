@@ -22,10 +22,10 @@ import io.jsonwebtoken.SignatureAlgorithm;
 public class JwtTokenProvider {
 
 	@Value("${security.jwt.token.secret-key:JWTSuperSecretKey}")
-	private String jwtSecret;
+	private String jwtSecret = "JWTSuperSecretKey";
 
 	@Value("${security.jwt.token.expire-length:3600000}")
-	private long jwtExpirationInMs;
+	private long jwtExpirationInMs = 3600000;
 
 	@Autowired
 	private UserDetailsService userDetailsService;
@@ -56,13 +56,28 @@ public class JwtTokenProvider {
 		return claims;
 	}
 
+	public Date getIssuedAtDateFromToken(String token) {
+		Date issueAt;
+		try {
+			final Claims claims = this.getAllClaimsFromToken(token);
+			issueAt = claims.getIssuedAt();
+		} catch (Exception e) {
+			issueAt = null;
+		}
+		return issueAt;
+	}
+
 	public String createToken(UserDetails userDetails) {
 
 		Claims claims = Jwts.claims().setSubject(userDetails.getUsername());
 		claims.put("roles", userDetails.getAuthorities());
 
-		return Jwts.builder().setClaims(claims).setIssuedAt(now).setExpiration(expiryDate)
-				.signWith(SIGNATURE_ALGORITHM, jwtSecret).compact();
+		return Jwts.builder()
+				.setClaims(claims)
+				.setIssuedAt(now)
+				.setExpiration(expiryDate)
+				.signWith(SIGNATURE_ALGORITHM, jwtSecret)
+				.compact();
 	}
 
 	public String resolveToken(HttpServletRequest req) {

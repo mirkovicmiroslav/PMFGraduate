@@ -1,7 +1,7 @@
 <div class="wrapper fadeInDown">
   <div id="formContent">
     <div class="fadeIn first">
-      <h2>Login</h2>
+      <h2>Prijava</h2>
     </div>
     <form #loginForm="ngForm">
       <div>
@@ -18,9 +18,9 @@
         <span
           class="validation-message"
           style="text-align: center; display:block;"
-          *ngIf="email.errors?.required && email.touched"
+          *ngIf="email.hasError('required') && email.touched"
           class="text-danger"
-          >Email is required</span
+          >Email je obavezan</span
         >
       </div>
       <div>
@@ -31,30 +31,29 @@
           class="fadeIn third"
           [(ngModel)]="loginData.password"
           #password="ngModel"
-          placeholder="Password"
+          placeholder="Lozinka"
           required
         />
         <span
           class="validation-message"
           style="text-align: center; display:block;"
-          *ngIf="password.errors?.required && password.touched"
+          *ngIf="password.hasError('required') && password.touched"
           class="text-danger"
-          >Password is required</span
+          >Lozinka je obavezna</span
         >
       </div>
       <button
         [disabled]="!loginForm.valid"
         type="submit"
         class="fadeIn fourth"
-        value="Log in"
         (click)="onLogin()"
       >
-        Log in
+        Prijavi se
       </button>
     </form>
     <div id="formFooter">
-      Don't have account?
-      <a class="underlineHover" routerLink="/register">Register</a>
+      Nemas nalog?
+      <a class="underlineHover" routerLink="/register">Registruj se</a>
     </div>
   </div>
 </div>

@@ -1,7 +1,10 @@
 package com.pmfgraduate.config;
 
+import com.pmfgraduate.security.JwtAuthenticationEntryPoint;
+import com.pmfgraduate.security.JwtAuthenticationFilter;
+import com.pmfgraduate.security.JwtTokenProvider;
+import com.pmfgraduate.service.impl.CustomUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -12,7 +15,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -21,11 +23,9 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
+import org.springframework.web.multipart.MultipartResolver;
+import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 
-import com.pmfgraduate.security.JwtAuthenticationEntryPoint;
-import com.pmfgraduate.security.JwtAuthenticationFilter;
-import com.pmfgraduate.security.JwtTokenProvider;
-import com.pmfgraduate.service.impl.CustomUserDetailsService;
 
 @Configuration
 @EnableWebSecurity
@@ -33,8 +33,7 @@ import com.pmfgraduate.service.impl.CustomUserDetailsService;
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Autowired
-	@Qualifier("userDetailsService")
-	UserDetailsService userDetailsService;
+	CustomUserDetailsService customUserDetailsService;
 
 	@Autowired
 	private JwtAuthenticationEntryPoint unauthorizedHandler;
@@ -44,11 +43,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Autowired
 	public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-		auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
+		auth.userDetailsService(customUserDetailsService).passwordEncoder(passwordEncoder());
 	}
 
-	@Override
 	@Bean
+	@Override
 	public AuthenticationManager authenticationManagerBean() throws Exception {
 		return super.authenticationManagerBean();
 	}
@@ -74,9 +73,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http.cors().and().csrf().disable().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-				.and().exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and().authorizeRequests()
-				.antMatchers("/api/auth/**").permitAll().anyRequest().authenticated().and()
+				.and()
+				.exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and().authorizeRequests()
+				.antMatchers("/api/auth/**").permitAll()
+				.anyRequest().authenticated().and()
 				.addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
+
 	}
 
 }

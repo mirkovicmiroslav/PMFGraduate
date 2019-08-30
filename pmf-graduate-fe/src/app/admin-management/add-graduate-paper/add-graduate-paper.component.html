@@ -1,0 +1,240 @@
+<div class="container">
+  <div class="row">
+      <div class="table-responsive">
+        <form #addGraduateParerForm="ngForm">
+          <caption>KLJUČNA DOKUMENTACIJSKA INFORMACIJA<br></caption>
+          <table class="table table-bordered table-hover">
+            <col width="35%">
+            <col width="65%">
+            <tbody >
+              <tr>
+                <td><i>Diplomski rad: </i><b>PDF</b></td>
+                <td>
+                  <input type="file" class="form-control" name="pdfFile" id="pdfFile"
+                  #pdfFile placeholder="Unesite diplomski rad u PDF formatu..."  (change)="onFileSelected($event)" required/>
+                </td>
+              </tr>
+              <tr>
+                <td><i>Redni broj: </i><b>RBR</b></td>
+                <td>
+                  <input
+                    type="number"
+                    class="form-control"
+                    name="accessionNumber"
+                    id="accessionNumber"
+                    [(ngModel)]="graduatePaper.accessionNumber"
+                    #accessionNumber="ngModel"
+                    placeholder="Unesite redni broj..."
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td><i>Identifikacioni broj: </i><b>IBR</b></td>
+                <td>
+                  <input
+                    type="number"
+                    class="form-control"
+                    name="identifikacionNumber"
+                    id="identifikacionNumber"
+                    [(ngModel)]="graduatePaper.identificationNumber"
+                    #identifikacionNumber="ngModel"
+                    placeholder="Unesite Identifikacioni broj..."
+                  />
+                </td>
+              </tr>
+              
+              <tr>
+                <td><i>Tip dokumentacije: </i><b>TD *</b></td>
+                <td>
+                  <input type="text" class="form-control" name="documentType" id="documentType"
+                    [(ngModel)]="graduatePaper.documentType" #documentType="ngModel" placeholder="Unesite tip dokumentacije..." />
+                </td>
+              </tr>
+              <tr>
+                <td><i>Tip zapisa: </i><b>TZ</b></td>
+                <td>
+                  <input type="text" class="form-control" name="typeOfRecord" id="typeOfRecord"
+                    [(ngModel)]="graduatePaper.typeOfRecord" #typeOfRecord="ngModel"
+                    placeholder="Unesite tip zapisa..." />
+                </td>
+              </tr>
+              <tr>
+                <td><i>Vrsta rada: </i><b>VR</b></td>
+                <td>
+                  <input type="text" class="form-control" name="contentCode" id="contentCode"
+                    [(ngModel)]="graduatePaper.contentCode" #contentCode="ngModel" placeholder="Unesite vrstu rada..." />
+                </td>
+              </tr>
+              <tr>
+                <td> <i>Autor: </i><b>AU</b></td>
+                <td>
+                  <input type="text" class="form-control" name="author" id="author"
+                    [(ngModel)]="graduatePaper.author" #author="ngModel" placeholder="Unesite autora..." required/>
+                </td>
+              </tr>
+              <tr>
+                <td><i>Mentor: </i><b>MN</b></td>
+                <td>
+                  <input type="text" class="form-control" name="mentor" id="mentor" [(ngModel)]="graduatePaper.mentor"
+                    #mentor="ngModel" placeholder="Unesite mentora.." />
+                </td>
+              </tr>
+              <tr>
+                <td><i>Naslov rada: </i><b>NR</b></td>
+                <td>
+                  <input type="text" class="form-control" name="title" id="title" [(ngModel)]="graduatePaper.title"
+                    #title="ngModel" placeholder="Unesite naslov..." />
+                </td>
+              </tr>
+              <tr>
+                <td><i>Jezik publikacije: </i><b>JP</b></td>
+                <td>
+                  <input type="text" class="form-control" name="languageOfText" id="languageOfText" [(ngModel)]="graduatePaper.languageOfText"
+                    #languageOfText="ngModel" placeholder="Unesite jezik publikacije.." />
+                </td>
+              </tr>
+              <tr>
+                <td><i>Jezik izvoda: </i><b>JI</b></td>
+                <td>
+                  <input type="text" class="form-control" name="languageOfAbstract" id="languageOfAbstract" [(ngModel)]="graduatePaper.languageOfAbstract" #languageOfAbstract="ngModel"
+                    placeholder="Unesite jezik izvoda..." />
+                </td>
+              </tr>
+              <tr>
+                <td><i>Zemlja publikovanja: </i><b>ZP</b></td>
+                <td>
+                  <input type="text" class="form-control" name="countryOfPublication" id="countryOfPublication"
+                    [(ngModel)]="graduatePaper.countryOfPublication" #countryOfPublication="ngModel" placeholder="Unesite zemlju publikovanja.." />
+                </td>
+              </tr>
+              <tr>
+                <td><i>Uže geografsko područje: </i><b>UGP</b></td>
+                <td>
+                  <input type="text" class="form-control" name="localityOfPublication" id="localityOfPublication"
+                    [(ngModel)]="graduatePaper.localityOfPublication" #localityOfPublication="ngModel"
+                    placeholder="Unesite uze geografsko podrucje..." />
+                </td>
+              </tr>
+              <tr>
+                <td><i>Godina: </i><b>GO</b></td>
+                <td>
+                  <input type="number" class="form-control" name="publicationYear" id="publicationYear"
+                    [(ngModel)]="graduatePaper.publicationYear" #publicationYear="ngModel"
+                    placeholder="Unesite godinu izdanja..." />
+                </td>
+              </tr>
+              <tr>
+                <td><i>Izdavač: </i><b>IZ</b></td>
+                <td>
+                  <input type="text" class="form-control" name="publisher" id="publisher"
+                    [(ngModel)]="graduatePaper.publisher" #publisher="ngModel"
+                    placeholder="Unesite izdavača..." />
+                </td>
+              </tr>
+              <tr>
+                <td><i>Mesto i adresa: </i><b>MA</b></td>
+                <td>
+                  <input type="text" class="form-control" name="publicationPlace" id="publicationPlace"
+                    [(ngModel)]="graduatePaper.publicationPlace" #publicationPlace="ngModel" placeholder="Unesite mesto i adresu..." />
+                </td>
+              </tr>
+              <tr>
+                <td><i>Fizički opis rada: </i><b>FO</b></td>
+                <td>
+                  <input type="text" class="form-control" name="physicalDescription" id="physicalDescription" [(ngModel)]="graduatePaper.physicalDescription"
+                    #physicalDescription="ngModel" placeholder="Unesite fizički opis rada..." />
+                </td>
+              </tr>
+              <tr>
+                <td><i>Naučna oblast: </i><b>NO</b></td>
+                <td>
+                  <input type="text" class="form-control" name="scientificField" id="scientificField"
+                    [(ngModel)]="graduatePaper.scientificField" #scientificField="ngModel"
+                    placeholder="Unesite naučnu oblast..." />
+                </td>
+              </tr>
+              <tr>
+                <td><i>Naučna disciplina: </i><b>ND</b></td>
+                <td>
+                  <input type="text" class="form-control" name="scientificDiscipline" id="scientificDiscipline"
+                    [(ngModel)]="graduatePaper.scientificDiscipline" #scientificDiscipline="ngModel"
+                    placeholder="Unesite naučnu disciplinu..." />
+                </td>
+              </tr>
+              <tr>
+                <td><i>Predmetna odrednica/ ključne reči: </i><b>PO/UDK</b></td>
+                <td>
+                  <input type="text" class="form-control" name="keyWords" id="keyWords"
+                    [(ngModel)]="graduatePaper.keyWords" #keyWords="ngModel" placeholder="Unesite ključne reči..." />
+                </td>
+              </tr>
+              <tr>
+                <td><i>Čuva se: </i><b>ČU</b></td>
+                <td>
+                  <input type="text" class="form-control" name="holdingData" id="holdingData"
+                    [(ngModel)]="graduatePaper.holdingData" #holdingData="ngModel"
+                    placeholder="Unesite mesto čuvanja rada..." />
+                </td>
+              </tr>
+              <tr>
+                <td><i>Važna napomena: </i><b>VN</b></td>
+                <td>
+                  <input type="text" class="form-control" name="note" id="note" [(ngModel)]="graduatePaper.note"
+                    #note="ngModel" placeholder="Unesite važnu napomenu..." />
+                </td>
+              </tr>
+              <tr>
+                <td><i>Izvod: </i><b>IZ</b></td>
+                <td>
+                  <input type="text" class="form-control" name="excerpt" id="excerpt" [(ngModel)]="graduatePaper.excerpt"
+                    #excerpt="ngModel" placeholder="Unesite izvod..." />
+                </td>
+              </tr>
+              <tr>
+                <td><i>Datum prihvatanja teme od NN veća: </i><b>DP</b></td>
+                <td>
+                  <input type="date" class="form-control" name="acceptedByScientificBoard" id="acceptedByScientificBoard" [(ngModel)]="graduatePaper.acceptedByScientificBoard" #acceptedByScientificBoard="ngModel"
+                    placeholder="Unesite datum prihvatanja teme od NN veća..." />
+                </td>
+              </tr >
+              <tr>
+                <td><i>Datum odbrane: </i><b>DO</b></td>
+                <td>
+                  <input type="date" class="form-control" name="defendedOn" id="defendedOn"
+                    [(ngModel)]="graduatePaper.defendedOn" #defendedOn="ngModel"
+                    placeholder="Unesite datum odbrane..." />
+                </td>
+              </tr>
+              <tr>
+                <td colspan="2" style="width:100%"><i>Članovi komisije: </i><b>KO</b></td>
+              </tr>
+              <tr>
+                <td><i>Predsednik: </i></td>
+                <td>
+                  <input type="text" class="form-control" name="president" id="president" [(ngModel)]="graduatePaper.president"
+                    #president="ngModel" placeholder="Unesite predsednika komisije..." />
+                </td>
+              </tr>
+              <tr>
+                <td><i>Član: </i></td>
+                <td>
+                  <input type="text" class="form-control" name="memberFirst" id="memberFirst" [(ngModel)]="graduatePaper.memberFirst"
+                    #memberFirst="ngModel" placeholder="Unesite prvog člana komisije..." />
+                </td>
+              </tr>
+              <tr>
+                <td><i>Član: </i></td>
+                <td>
+                  <input type="text" class="form-control" name="memberSecond" id="memberSecond" [(ngModel)]="graduatePaper.memberSecond"
+                    #memberSecond="ngModel" placeholder="Unesite drugog člana komisije..." />
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <button [disabled]="!addGraduateParerForm.valid" type="submit" class="btn-info" style="float: right" value="Sacuvaj" (click)="onCreateGraduatePaper()">
+            Sacuvaj
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
