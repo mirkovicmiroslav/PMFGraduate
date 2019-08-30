@@ -14,7 +14,7 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 @Document(collection = "graduate-paper")
-public class File {
+public class GraduatePaper {
 
     @Id
     private String id;

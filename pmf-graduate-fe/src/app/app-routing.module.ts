@@ -5,6 +5,11 @@ import { Routes, RouterModule } from "@angular/router";
 const routes: Routes = [
   {
     path: "",
+    loadChildren:
+      "./graduate-papers/graduate-papers.module#GraduatePapersModule"
+  },
+  {
+    path: "",
     loadChildren: "./authentication/authentication.module#AuthenticationModule"
   },
   {
