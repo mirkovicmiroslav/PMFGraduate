@@ -19,4 +19,5 @@ public class GraduatePaperDTO {
     private String title;
     private int publicationYear;
     private Date defendedOn;
+    private String pdfFile;
 }

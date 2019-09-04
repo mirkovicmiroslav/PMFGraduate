@@ -2,15 +2,20 @@ package com.pmfgraduate.service.impl;
 
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
+import com.mongodb.client.gridfs.model.GridFSFile;
 import com.pmfgraduate.dto.FileResponseDTO;
 import com.pmfgraduate.dto.GraduatePaperListDTO;
+import com.pmfgraduate.dto.PdfFileDTO;
 import com.pmfgraduate.exception.PmfGraduateException;
 import com.pmfgraduate.mapper.GraduatePaperMapper;
 import com.pmfgraduate.model.GraduatePaper;
 import com.pmfgraduate.repository.GraduatePaperRepository;
 import com.pmfgraduate.service.GraduatePaperService;
+import org.apache.commons.io.IOUtils;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.gridfs.GridFsOperations;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -19,7 +24,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.List;
 
 @Service
 public class GraduatePaperServiceImpl implements GraduatePaperService {
@@ -69,6 +73,13 @@ public class GraduatePaperServiceImpl implements GraduatePaperService {
     @Override
     public GraduatePaper getByID(String id) {
         return graduatePaperRepository.findById(id).orElseThrow(() -> new PmfGraduateException(HttpStatus.BAD_REQUEST, "Some problem..."));
+    }
+
+    @Override
+    public PdfFileDTO getGraduatePaperPdf(String id) throws IOException {
+        GridFSFile gridFsFile = gridFsOperations.findOne(new Query(Criteria.where("_id").is(id)));
+
+        return new PdfFileDTO(IOUtils.toByteArray(gridFsOperations.getResource(gridFsFile).getInputStream()));
     }
 
 

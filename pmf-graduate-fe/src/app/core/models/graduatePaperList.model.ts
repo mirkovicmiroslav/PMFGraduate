@@ -13,4 +13,5 @@ interface GraduatePaperInfo {
   title: string;
   publicationYear;
   defendedOn;
+  pdfFile: string;
 }

@@ -7,6 +7,7 @@ import { ToastrModule } from "ngx-toastr";
 
 import { AppRoutingModule } from "./app-routing.module";
 import { AppComponent } from "./app.component";
+import { PdfViewerModule } from "ng2-pdf-viewer";
 
 @NgModule({
   declarations: [AppComponent, HeaderComponent],
@@ -14,6 +15,7 @@ import { AppComponent } from "./app.component";
     BrowserModule,
     AppRoutingModule,
     CoreModule,
+    PdfViewerModule,
     BrowserAnimationsModule,
     ToastrModule.forRoot()
   ],

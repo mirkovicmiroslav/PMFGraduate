@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.IOException;
+
 @RequestMapping("api/graduatePapers")
 @RestController
 public class GraduatePaperController {
@@ -25,5 +27,9 @@ public class GraduatePaperController {
         return ResponseEntity.ok(graduatePaperService.getByID(id));
     }
 
+    @GetMapping("/getPdf/{id}")
+    public ResponseEntity<?> getPdfById(@PathVariable String id) throws IOException {
+        return ResponseEntity.ok(graduatePaperService.getGraduatePaperPdf(id));
+    }
 
 }

@@ -7,7 +7,10 @@
     >
       <div class="card h-100">
         <a href="#"
-          ><img class="card-img-top" src="http://placehold.it/700x400" alt=""
+          ><img
+            class="card-img-top"
+            src="/assets/graduatePaperTemplate.jpg"
+            alt=""
         /></a>
         <div class="card-body">
           <h4 class="card-title">
@@ -17,6 +20,14 @@
           </h4>
           <p class="card-text">Autor: {{ graduatePaper.author }}</p>
         </div>
+        <button
+          type="button"
+          data-toggle="modal"
+          data-target="#myModal"
+          (click)="onOpenGraduatePaper(graduatePaper.pdfFile)"
+        >
+          aaa
+        </button>
       </div>
     </div>
   </div>
@@ -44,4 +55,53 @@
       </a>
     </li>
   </ul>
+</div>
+
+<div class="modal" id="myModal" tabindex="-1" role="dialog">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <input
+          #queryInp
+          matInput
+          id="pdfQueryInput"
+          type="text"
+          placeholder="Pretraži diplomski rad..."
+          [value]="pdfQuery"
+          (input)="searchQueryChanged($event.target.value)"
+          (keyup.enter)="searchQueryChanged(queryInp.value)"
+        />
+        <button
+          class="btn btn-secondary btn-sm"
+          (click)="prevPage()"
+          [disabled]="page === 1"
+        >
+          <b> <</b>
+        </button>
+        <span>{{ page }} / {{ totalPages }}</span>
+        <button
+          class="btn btn-secondary btn-sm"
+          (click)="nextPage()"
+          [disabled]="page === totalPages"
+        >
+          <b>></b>
+        </button>
+        Idi na:<input type="text" id="page" [(ngModel)]="page" />
+      </div>
+      <div class="modal-body">
+        <pdf-viewer
+          [src]="pdfSrc"
+          [(page)]="page"
+          [show-all]="false"
+          (after-load-complete)="afterLoadComplete($event)"
+        ></pdf-viewer>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" data-dismiss="modal">
+          Nazad
+        </button>
+      </div>
+    </div>
+  </div>
 </div>

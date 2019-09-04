@@ -16,4 +16,8 @@ export class GraduatePaperService {
   public getByID(id: string): Observable<any> {
     return this.http.get(environment.url + "api/graduatePapers/" + id);
   }
+
+  public getPdfFileById(id: string): Observable<any> {
+    return this.http.get(environment.url + "api/graduatePapers/getPdf/" + id);
+  }
 }

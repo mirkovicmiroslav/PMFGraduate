@@ -10,6 +10,5 @@ public interface GraduatePaperMapper {
 
     GraduatePaper map(GraduatePaperDTO source);
 
-    @Mapping(target = "id", source = "source.id")
     GraduatePaperDTO map(GraduatePaper source);
 }
