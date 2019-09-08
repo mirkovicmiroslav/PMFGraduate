@@ -15,4 +15,5 @@ public interface GraduatePaperService {
     public GraduatePaperListDTO getAllGraduatePapers();
     public GraduatePaper getByID(String id);
     public PdfFileDTO getGraduatePaperPdf(String id) throws IOException;
+    public GraduatePaperListDTO getSearchedFilter(String title, String author, String mentor);
 }

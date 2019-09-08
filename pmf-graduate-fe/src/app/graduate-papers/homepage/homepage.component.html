@@ -1,6 +1,47 @@
 <div class="container">
-  <br />
   <div class="row">
+    <div class="container">
+      <div class="row">
+        <h4 style="color: #4584be;">Pretraži diplomske radove</h4>
+        <div class="col-lg-12">
+          <div class="row">
+            <div class="col-lg-3 col-md-3 col-sm-12 p-0">
+              <input
+                type="text"
+                class="form-control"
+                placeholder="Unesi naslov"
+                #titleSearchInput
+              />
+            </div>
+            <div class="col-lg-3 col-md-3 col-sm-12 p-0">
+              <input
+                type="text"
+                class="form-control"
+                placeholder="Unesi autora"
+                #authorSearchInput
+              />
+            </div>
+            <div class="col-lg-3 col-md-3 col-sm-12 p-0">
+              <input
+                type="text"
+                class="form-control"
+                placeholder="Unesi mentora"
+                #mentorSearchInput
+              />
+            </div>
+            <div class="col-lg-3 col-md-3 col-sm-12 p-0">
+              <input
+                type="text"
+                class="form-control"
+                placeholder="Unesi reči iz rada"
+                #bookSearchInput
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <br /><br /><br /><br />
     <div
       class="col-lg-3 col-md-4 col-sm-6 mb-4"
       *ngFor="let graduatePaper of graduatePaperList.graduatePapers"
@@ -10,24 +51,23 @@
           ><img
             class="card-img-top"
             src="/assets/graduatePaperTemplate.jpg"
-            alt=""
+            data-toggle="modal"
+            data-target="#myModal"
+            (click)="onOpenGraduatePaper(graduatePaper.pdfFile)"
         /></a>
         <div class="card-body">
           <h4 class="card-title">
-            <a routerLink="graduate-paper/{{ graduatePaper.id }}"
-              >Naslov: {{ graduatePaper.title }}</a
+            Naslov:<a
+              routerLink="graduate-paper/{{ graduatePaper.id }}"
+              data-toggle="modal"
+              data-target="#myModal"
+              (click)="onOpenGraduatePaper(graduatePaper.pdfFile)"
+            >
+              {{ graduatePaper.title }}</a
             >
           </h4>
           <p class="card-text">Autor: {{ graduatePaper.author }}</p>
         </div>
-        <button
-          type="button"
-          data-toggle="modal"
-          data-target="#myModal"
-          (click)="onOpenGraduatePaper(graduatePaper.pdfFile)"
-        >
-          aaa
-        </button>
       </div>
     </div>
   </div>
@@ -57,7 +97,13 @@
   </ul>
 </div>
 
-<div class="modal" id="myModal" tabindex="-1" role="dialog">
+<div
+  class="modal"
+  id="myModal"
+  tabindex="-1"
+  role="dialog"
+  (keydown)="onKeyPress($event)"
+>
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="modal-header">
@@ -86,7 +132,7 @@
         >
           <b>></b>
         </button>
-        Idi na:<input type="text" id="page" [(ngModel)]="page" />
+        Idi na:<input type="text" name="page" id="page" [(ngModel)]="page" />
       </div>
       <div class="modal-body">
         <pdf-viewer

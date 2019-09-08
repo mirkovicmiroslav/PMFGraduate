@@ -3,10 +3,7 @@ package com.pmfgraduate.controller;
 import com.pmfgraduate.service.GraduatePaperService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 
@@ -30,6 +27,11 @@ public class GraduatePaperController {
     @GetMapping("/getPdf/{id}")
     public ResponseEntity<?> getPdfById(@PathVariable String id) throws IOException {
         return ResponseEntity.ok(graduatePaperService.getGraduatePaperPdf(id));
+    }
+
+    @RequestMapping("/getSearchedFilter")
+    public ResponseEntity<?> getAllBooksFromCategories(@RequestParam String title, @RequestParam String author, @RequestParam String mentor) {
+        return ResponseEntity.ok(graduatePaperService.getSearchedFilter(title, author, mentor));
     }
 
 }

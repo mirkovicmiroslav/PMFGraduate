@@ -2,8 +2,15 @@ import { GraduatePaper } from "./../../core/models/graduatePaper.model";
 import { PdfViewerComponent } from "ng2-pdf-viewer";
 import { GraduatePaperService } from "../../core/services/graduatePaper.service";
 import { GraduatePaperList } from "../../core/models/graduatePaperList.model";
-import { Component, OnInit, ViewChild, OnDestroy } from "@angular/core";
-import { Subscription } from "rxjs";
+import {
+  Component,
+  OnInit,
+  ViewChild,
+  OnDestroy,
+  ElementRef
+} from "@angular/core";
+import { debounceTime, map, distinctUntilChanged } from "rxjs/operators";
+import { fromEvent, Subscription } from "rxjs";
 
 @Component({
   selector: "app-homepage",
@@ -11,7 +18,7 @@ import { Subscription } from "rxjs";
   styleUrls: ["./homepage.component.css"]
 })
 export class HomepageComponent implements OnInit, OnDestroy {
-  private subscription: Subscription;
+  private subscription: Subscription = new Subscription();
   graduatePaperList: GraduatePaperList = new GraduatePaperList();
   @ViewChild(PdfViewerComponent, { static: false })
   public pdfComponent: PdfViewerComponent;
@@ -21,20 +28,65 @@ export class HomepageComponent implements OnInit, OnDestroy {
   totalPages: number;
   pdfQuery = "";
   pdf: any;
+  @ViewChild("titleSearchInput", { static: true })
+  titleSearchInput: ElementRef;
+  @ViewChild("authorSearchInput", { static: true })
+  authorSearchInput: ElementRef;
+  @ViewChild("mentorSearchInput", { static: true })
+  mentorSearchInput: ElementRef;
+  titleSearchString: string = "";
+  authorSearchString: string = "";
+  mentorSearchString: string = "";
 
   constructor(private graduatePaperService: GraduatePaperService) {}
 
   ngOnInit() {
-    this.getAllGraduatePapers();
+    this.subscription.add(this.getAllGraduatePapers());
+    this.onSearch(this.titleSearchInput);
+    this.onSearch(this.authorSearchInput);
+    this.onSearch(this.mentorSearchInput);
   }
 
   ngOnDestroy() {
     this.subscription.unsubscribe();
   }
 
+  onSearch(searchInput: ElementRef) {
+    this.subscription.add(
+      fromEvent(searchInput.nativeElement, "keyup")
+        .pipe(
+          map((event: any) => {
+            return event.target.value;
+          }),
+          debounceTime(200),
+          distinctUntilChanged()
+        )
+        .subscribe((text: string) => {
+          if (searchInput == this.titleSearchInput) {
+            this.titleSearchString = text;
+          } else if (searchInput == this.authorSearchInput) {
+            this.authorSearchString = text;
+          } else {
+            this.mentorSearchString = text;
+          }
+          this.getSearchedFilter();
+        })
+    );
+  }
+
   getAllGraduatePapers() {
-    this.subscription = this.graduatePaperService
-      .getAllGraduatePapers()
+    this.graduatePaperService.getAllGraduatePapers().subscribe(response => {
+      this.graduatePaperList.graduatePapers = response.graduatePapers;
+    });
+  }
+
+  getSearchedFilter() {
+    this.graduatePaperService
+      .getSearchedFilter(
+        this.titleSearchString,
+        this.authorSearchString,
+        this.mentorSearchString
+      )
       .subscribe(response => {
         this.graduatePaperList.graduatePapers = response.graduatePapers;
       });
@@ -80,6 +132,15 @@ export class HomepageComponent implements OnInit, OnDestroy {
   afterLoadComplete(pdf: any) {
     this.totalPages = pdf.numPages;
     this.pdf = pdf;
+  }
+
+  onKeyPress(event: KeyboardEvent) {
+    if (event.keyCode == 37) {
+      this.page--;
+    }
+    if (event.keyCode == 39) {
+      this.page++;
+    }
   }
 
   nextPage() {

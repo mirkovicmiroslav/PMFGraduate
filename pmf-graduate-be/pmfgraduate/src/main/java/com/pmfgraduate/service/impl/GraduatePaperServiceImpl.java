@@ -82,5 +82,14 @@ public class GraduatePaperServiceImpl implements GraduatePaperService {
         return new PdfFileDTO(IOUtils.toByteArray(gridFsOperations.getResource(gridFsFile).getInputStream()));
     }
 
+    @Override
+    public GraduatePaperListDTO getSearchedFilter(String title, String author, String mentor) {
+        GraduatePaperListDTO graduatePaperListDTO = new GraduatePaperListDTO();
+
+        graduatePaperRepository.findByTitleLikeAndAuthorLikeAndMentorLike(title, author, mentor).forEach(graduatePaper -> { graduatePaperListDTO.getGraduatePapers().add(graduatePaperMapper.map(graduatePaper)); });
+
+        return graduatePaperListDTO;
+    }
+
 
 }
