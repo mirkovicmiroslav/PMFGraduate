@@ -21,6 +21,10 @@ export class GraduatePaperService {
     return this.http.get(environment.url + "api/graduatePapers/getPdf/" + id);
   }
 
+  public getTopMentors(): Observable<any> {
+    return this.http.get(environment.url + "api/graduatePapers/getTopMentors");
+  }
+
   public getSearchedFilter(
     title: string,
     author: string,

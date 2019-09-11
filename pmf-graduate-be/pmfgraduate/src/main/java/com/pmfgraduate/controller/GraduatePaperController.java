@@ -30,8 +30,13 @@ public class GraduatePaperController {
     }
 
     @RequestMapping("/getSearchedFilter")
-    public ResponseEntity<?> getAllBooksFromCategories(@RequestParam String title, @RequestParam String author, @RequestParam String mentor) {
+    public ResponseEntity<?> getSearchedGraduatePapers(@RequestParam String title, @RequestParam String author, @RequestParam String mentor) {
         return ResponseEntity.ok(graduatePaperService.getSearchedFilter(title, author, mentor));
+    }
+
+    @RequestMapping("/getTopMentors")
+    public ResponseEntity<?> getTopMentors(){
+        return ResponseEntity.ok(graduatePaperService.getTopMentors());
     }
 
 }

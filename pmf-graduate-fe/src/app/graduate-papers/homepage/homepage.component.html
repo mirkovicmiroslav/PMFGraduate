@@ -1,152 +1,160 @@
-<div class="container">
+<div class="new" style="float: right">
+  <h4 style="color: #4584be">Najčešći mentori:</h4>
+  <ul class="list-group" *ngFor="let mentor of topMentorsList.mentors">
+    <li class="list-group-item">
+      {{ mentor.name }} &nbsp;&nbsp;
+      <span class="badge badge-secondary" style="float: right">{{
+        mentor.count
+      }}</span>
+    </li>
+  </ul>
+</div>
+<div class="container-fluid">
   <div class="row">
-    <div class="container">
+    <h4 style="color: #4584be;">Pretraži diplomske radove</h4>
+    <div class="col-lg-12">
       <div class="row">
-        <h4 style="color: #4584be;">Pretraži diplomske radove</h4>
-        <div class="col-lg-12">
-          <div class="row">
-            <div class="col-lg-3 col-md-3 col-sm-12 p-0">
-              <input
-                type="text"
-                class="form-control"
-                placeholder="Unesi naslov"
-                #titleSearchInput
-              />
-            </div>
-            <div class="col-lg-3 col-md-3 col-sm-12 p-0">
-              <input
-                type="text"
-                class="form-control"
-                placeholder="Unesi autora"
-                #authorSearchInput
-              />
-            </div>
-            <div class="col-lg-3 col-md-3 col-sm-12 p-0">
-              <input
-                type="text"
-                class="form-control"
-                placeholder="Unesi mentora"
-                #mentorSearchInput
-              />
-            </div>
-            <div class="col-lg-3 col-md-3 col-sm-12 p-0">
-              <input
-                type="text"
-                class="form-control"
-                placeholder="Unesi reči iz rada"
-                #bookSearchInput
-              />
-            </div>
-          </div>
+        <div class="col-lg-3 col-md-3 col-sm-12 p-0">
+          <input
+            type="text"
+            class="form-control"
+            placeholder="Unesi naslov"
+            #titleSearchInput
+          />
+        </div>
+        <div class="col-lg-3 col-md-3 col-sm-12 p-0">
+          <input
+            type="text"
+            class="form-control"
+            placeholder="Unesi autora"
+            #authorSearchInput
+          />
+        </div>
+        <div class="col-lg-3 col-md-3 col-sm-12 p-0">
+          <input
+            type="text"
+            class="form-control"
+            placeholder="Unesi mentora"
+            #mentorSearchInput
+          />
+        </div>
+        <div class="col-lg-3 col-md-3 col-sm-12 p-0">
+          <input
+            type="text"
+            class="form-control"
+            placeholder="Unesi reči iz rada"
+            #bookSearchInput
+          />
         </div>
       </div>
     </div>
-    <br /><br /><br /><br />
-    <div
-      class="col-lg-3 col-md-4 col-sm-6 mb-4"
-      *ngFor="let graduatePaper of graduatePaperList.graduatePapers"
-    >
-      <div class="card h-100">
-        <a href="#"
-          ><img
+
+    <br /><br />
+    <div class="row">
+      <div
+        class="col-sm-3"
+        *ngFor="let graduatePaper of graduatePaperList.graduatePapers"
+      >
+        <div class="card h-100">
+          <img
             class="card-img-top"
             src="/assets/graduatePaperTemplate.jpg"
             data-toggle="modal"
             data-target="#myModal"
             (click)="onOpenGraduatePaper(graduatePaper.pdfFile)"
-        /></a>
-        <div class="card-body">
-          <h4 class="card-title">
-            Naslov:<a
-              routerLink="graduate-paper/{{ graduatePaper.id }}"
-              data-toggle="modal"
-              data-target="#myModal"
-              (click)="onOpenGraduatePaper(graduatePaper.pdfFile)"
+          />
+          <div class="card-body">
+            <h5 class="card-title">
+              Naslov:<a
+                routerLink="graduate-paper/{{ graduatePaper.id }}"
+                data-toggle="modal"
+                data-target="#myModal"
+                (click)="onOpenGraduatePaper(graduatePaper.pdfFile)"
+              >
+                {{ graduatePaper.title }}</a
+              >
+            </h5>
+            <p class="card-text">
+              Autor: <i>{{ graduatePaper.author }}</i>
+            </p>
+            <p class="card-text">
+              Mentor: <i>{{ graduatePaper.mentor }}</i>
+            </p>
+            <p class="card-text">
+              Datum odbrane: <i>{{ graduatePaper.defendedOn }} god.</i>
+            </p>
+          </div>
+          <div
+            class="card-footer"
+            *ngIf="
+              activeAddToFavourites.includes(graduatePaper.id) &&
+              !authService.isAdmin()
+            "
+          >
+            <button
+              type="button"
+              class="btn btn-info btn-sm"
+              (click)="onAddToFavourites(graduatePaper)"
             >
-              {{ graduatePaper.title }}</a
-            >
-          </h4>
-          <p class="card-text">Autor: {{ graduatePaper.author }}</p>
+              Dodaj u omiljene
+            </button>
+          </div>
         </div>
       </div>
     </div>
   </div>
 
-  <ul class="pagination justify-content-center">
-    <li class="page-item">
-      <a class="page-link" href="#" aria-label="Previous">
-        <span aria-hidden="true">&laquo;</span>
-        <span class="sr-only">Previous</span>
-      </a>
-    </li>
-    <li class="page-item">
-      <a class="page-link" href="#">1</a>
-    </li>
-    <li class="page-item">
-      <a class="page-link" href="#">2</a>
-    </li>
-    <li class="page-item">
-      <a class="page-link" href="#">3</a>
-    </li>
-    <li class="page-item">
-      <a class="page-link" href="#" aria-label="Next">
-        <span aria-hidden="true">&raquo;</span>
-        <span class="sr-only">Next</span>
-      </a>
-    </li>
-  </ul>
-</div>
+  <div
+    class="modal"
+    id="myModal"
+    tabindex="-1"
+    role="dialog"
+    (keydown)="onKeyPress($event)"
+  >
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <input
+            #queryInp
+            matInput
+            id="pdfQueryInput"
+            type="text"
+            placeholder="Pretraži diplomski rad..."
+            [value]="pdfQuery"
+            (input)="searchQueryChanged($event.target.value)"
+            (keyup.enter)="searchQueryChanged(queryInp.value)"
+          />
+          <button
+            class="btn btn-secondary btn-sm"
+            (click)="prevPage()"
+            [disabled]="page === 1"
+          >
+            <b> <</b>
+          </button>
+          <span>{{ page }} / {{ totalPages }}</span>
+          <button
+            class="btn btn-secondary btn-sm"
+            (click)="nextPage()"
+            [disabled]="page === totalPages"
+          >
+            <b>></b>
+          </button>
+          Idi na:<input type="text" name="page" id="page" [(ngModel)]="page" />
+        </div>
+        <div class="modal-body">
+          <pdf-viewer
+            [src]="pdfSrc"
+            [(page)]="page"
+            [show-all]="false"
+            (after-load-complete)="afterLoadComplete($event)"
+          ></pdf-viewer>
+        </div>
 
-<div
-  class="modal"
-  id="myModal"
-  tabindex="-1"
-  role="dialog"
-  (keydown)="onKeyPress($event)"
->
-  <div class="modal-dialog modal-lg">
-    <div class="modal-content">
-      <div class="modal-header">
-        <input
-          #queryInp
-          matInput
-          id="pdfQueryInput"
-          type="text"
-          placeholder="Pretraži diplomski rad..."
-          [value]="pdfQuery"
-          (input)="searchQueryChanged($event.target.value)"
-          (keyup.enter)="searchQueryChanged(queryInp.value)"
-        />
-        <button
-          class="btn btn-secondary btn-sm"
-          (click)="prevPage()"
-          [disabled]="page === 1"
-        >
-          <b> <</b>
-        </button>
-        <span>{{ page }} / {{ totalPages }}</span>
-        <button
-          class="btn btn-secondary btn-sm"
-          (click)="nextPage()"
-          [disabled]="page === totalPages"
-        >
-          <b>></b>
-        </button>
-        Idi na:<input type="text" name="page" id="page" [(ngModel)]="page" />
-      </div>
-      <div class="modal-body">
-        <pdf-viewer
-          [src]="pdfSrc"
-          [(page)]="page"
-          [show-all]="false"
-          (after-load-complete)="afterLoadComplete($event)"
-        ></pdf-viewer>
-      </div>
-
-      <div class="modal-footer">
-        <button type="button" class="btn btn-danger" data-dismiss="modal">
-          Nazad
-        </button>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-danger" data-dismiss="modal">
+            Nazad
+          </button>
+        </div>
       </div>
     </div>
   </div>

@@ -56,6 +56,16 @@
             Dodaj diplomski rad
           </a>
         </li>
+        <li
+          *ngIf="authService.isUser()"
+          class="nav-item"
+          data-toggle="collapse"
+          data-target=".navbar-collapse.show"
+        >
+          <a class="btn btn-link" routerLink="/graduate-paper/favourites">
+            Omiljeni diplomski radovi
+          </a>
+        </li>
         <li *ngIf="authService.isAuthenticated()" class="nav-item">
           <button
             type="submit"

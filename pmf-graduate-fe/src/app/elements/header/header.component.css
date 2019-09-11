@@ -1,3 +1,8 @@
+.container-fluid {
+  margin-left: 10%;
+  margin-right: 10%;
+}
+
 #ex4 .p1[data-count]:after {
   position: absolute;
   right: 10%;

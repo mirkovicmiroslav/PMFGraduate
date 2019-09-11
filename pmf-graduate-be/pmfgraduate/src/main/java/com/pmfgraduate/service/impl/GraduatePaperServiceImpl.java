@@ -1,11 +1,8 @@
 package com.pmfgraduate.service.impl;
 
-import com.mongodb.BasicDBObject;
-import com.mongodb.DBObject;
+import com.mongodb.*;
 import com.mongodb.client.gridfs.model.GridFSFile;
-import com.pmfgraduate.dto.FileResponseDTO;
-import com.pmfgraduate.dto.GraduatePaperListDTO;
-import com.pmfgraduate.dto.PdfFileDTO;
+import com.pmfgraduate.dto.*;
 import com.pmfgraduate.exception.PmfGraduateException;
 import com.pmfgraduate.mapper.GraduatePaperMapper;
 import com.pmfgraduate.model.GraduatePaper;
@@ -19,17 +16,25 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.gridfs.GridFsOperations;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartException;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
+@Transactional
 public class GraduatePaperServiceImpl implements GraduatePaperService {
 
     @Autowired
     GridFsOperations gridFsOperations;
+    @Autowired
+    MongoClient mongoClient;
     @Autowired
     GraduatePaperRepository graduatePaperRepository;
     @Autowired
@@ -86,9 +91,38 @@ public class GraduatePaperServiceImpl implements GraduatePaperService {
     public GraduatePaperListDTO getSearchedFilter(String title, String author, String mentor) {
         GraduatePaperListDTO graduatePaperListDTO = new GraduatePaperListDTO();
 
-        graduatePaperRepository.findByTitleLikeAndAuthorLikeAndMentorLike(title, author, mentor).forEach(graduatePaper -> { graduatePaperListDTO.getGraduatePapers().add(graduatePaperMapper.map(graduatePaper)); });
+        graduatePaperRepository.findByTitleIgnoreCaseLikeAndAuthorIgnoreCaseLikeAndMentorIgnoreCaseLike(title, author, mentor).forEach(graduatePaper -> { graduatePaperListDTO.getGraduatePapers().add(graduatePaperMapper.map(graduatePaper)); });
 
         return graduatePaperListDTO;
+    }
+
+    @Override
+    public TopMentorsListDTO getTopMentors() {
+        List<TopMentorsDTO> mentorsList = new ArrayList<>();
+
+        DB db = mongoClient.getDB("pmf-graduate");
+        DBCollection collection = db.getCollection("graduate-paper");
+
+        String map = "function() {emit(this.mentor, 1);};";
+        String reduce = "function(key, values) { return Array.sum(values);};";
+
+        MapReduceCommand cmd = new MapReduceCommand(collection, map, reduce,
+                null, MapReduceCommand.OutputType.INLINE, null);
+
+        MapReduceOutput out = collection.mapReduce(cmd);
+
+        for (DBObject o : out.results()) {
+            TopMentorsDTO topMentorsDTO = new TopMentorsDTO();
+            String replaceString = o.toMap().values().toString().replace("[", "").replace("]", "");
+            String[] splitMap = replaceString.split(",");
+
+            topMentorsDTO.setName(splitMap[0]);
+            topMentorsDTO.setCount((int) Double.parseDouble(splitMap[1].trim()));
+            mentorsList.add(topMentorsDTO);
+        }
+        mentorsList = mentorsList.stream().sorted(Comparator.comparing(TopMentorsDTO::getCount).reversed()).limit(5).collect(Collectors.toList());
+
+        return new TopMentorsListDTO(mentorsList);
     }
 
 

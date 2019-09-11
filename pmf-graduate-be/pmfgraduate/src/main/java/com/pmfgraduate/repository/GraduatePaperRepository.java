@@ -9,6 +9,6 @@ import java.util.List;
 @Repository
 public interface GraduatePaperRepository extends MongoRepository<GraduatePaper, String> {
 
-    List<GraduatePaper> findByTitleLikeAndAuthorLikeAndMentorLike(String title, String author, String mentor);
+    List<GraduatePaper> findByTitleIgnoreCaseLikeAndAuthorIgnoreCaseLikeAndMentorIgnoreCaseLike(String title, String author, String mentor);
 
 }

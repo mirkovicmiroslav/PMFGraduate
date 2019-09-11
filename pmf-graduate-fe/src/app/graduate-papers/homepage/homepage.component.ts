@@ -1,3 +1,5 @@
+import { GraduatePaperInfo } from "./../../core/models/graduatePaperInfo.model";
+import { TopMentorsList } from "./../../core/models/topMentorsList.model";
 import { GraduatePaper } from "./../../core/models/graduatePaper.model";
 import { PdfViewerComponent } from "ng2-pdf-viewer";
 import { GraduatePaperService } from "../../core/services/graduatePaper.service";
@@ -11,6 +13,8 @@ import {
 } from "@angular/core";
 import { debounceTime, map, distinctUntilChanged } from "rxjs/operators";
 import { fromEvent, Subscription } from "rxjs";
+import { AuthenticationService } from "src/app/core/services/authentication.service";
+import { ToastrService } from "ngx-toastr";
 
 @Component({
   selector: "app-homepage",
@@ -20,6 +24,8 @@ import { fromEvent, Subscription } from "rxjs";
 export class HomepageComponent implements OnInit, OnDestroy {
   private subscription: Subscription = new Subscription();
   graduatePaperList: GraduatePaperList = new GraduatePaperList();
+  graduatePaperFavourites: GraduatePaperInfo[] = [];
+  topMentorsList: TopMentorsList = new TopMentorsList();
   @ViewChild(PdfViewerComponent, { static: false })
   public pdfComponent: PdfViewerComponent;
   graduatePaper: GraduatePaper = new GraduatePaper();
@@ -37,11 +43,17 @@ export class HomepageComponent implements OnInit, OnDestroy {
   titleSearchString: string = "";
   authorSearchString: string = "";
   mentorSearchString: string = "";
+  activeAddToFavourites: Number[] = [];
 
-  constructor(private graduatePaperService: GraduatePaperService) {}
+  constructor(
+    private graduatePaperService: GraduatePaperService,
+    public authService: AuthenticationService,
+    private toastr: ToastrService
+  ) {}
 
   ngOnInit() {
     this.subscription.add(this.getAllGraduatePapers());
+    this.subscription.add(this.getTopMentors());
     this.onSearch(this.titleSearchInput);
     this.onSearch(this.authorSearchInput);
     this.onSearch(this.mentorSearchInput);
@@ -77,6 +89,16 @@ export class HomepageComponent implements OnInit, OnDestroy {
   getAllGraduatePapers() {
     this.graduatePaperService.getAllGraduatePapers().subscribe(response => {
       this.graduatePaperList.graduatePapers = response.graduatePapers;
+      for (let graduatePaper of response.graduatePapers) {
+        this.activeAddToFavourites.push(graduatePaper.id);
+      }
+      this.getBooksInCart();
+    });
+  }
+
+  getTopMentors() {
+    this.graduatePaperService.getTopMentors().subscribe(response => {
+      this.topMentorsList.mentors = response.mentors;
     });
   }
 
@@ -96,6 +118,49 @@ export class HomepageComponent implements OnInit, OnDestroy {
     this.graduatePaperService.getPdfFileById(id).subscribe(response => {
       this.pdfSrc = this.base64ToArrayBuffer(response.pdfBytes);
     });
+  }
+
+  onAddToFavourites(graduatePaper: GraduatePaperInfo) {
+    if (!this.authService.isUser()) {
+      this.toastr.warning("Morate se prijaviti");
+      return;
+    }
+
+    let graduatePaperInfo: GraduatePaperInfo = new GraduatePaperInfo();
+    for (let activeFavourites of this.activeAddToFavourites) {
+      if (activeFavourites == graduatePaper.id) {
+        this.activeAddToFavourites.splice(
+          this.activeAddToFavourites.indexOf(graduatePaper.id),
+          1
+        );
+      }
+    }
+
+    graduatePaperInfo = graduatePaper;
+    this.graduatePaperFavourites.push(graduatePaperInfo);
+    window.localStorage.setItem(
+      "favourites",
+      JSON.stringify(this.graduatePaperFavourites)
+    );
+    this.toastr.success("Diplomski rad dodat u omiljene");
+  }
+
+  getBooksInCart() {
+    this.graduatePaperFavourites = JSON.parse(
+      window.localStorage.getItem("favourites")
+    );
+    if (this.graduatePaperFavourites == null) {
+      this.graduatePaperFavourites = [];
+    } else {
+      for (let favourites of this.graduatePaperFavourites) {
+        if (this.activeAddToFavourites.includes(favourites.id)) {
+          this.activeAddToFavourites.splice(
+            this.activeAddToFavourites.indexOf(favourites.id),
+            1
+          );
+        }
+      }
+    }
   }
 
   base64ToArrayBuffer(base64) {
