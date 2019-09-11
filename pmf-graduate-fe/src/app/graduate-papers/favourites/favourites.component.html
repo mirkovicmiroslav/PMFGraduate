@@ -1,3 +1,101 @@
-<p>
-  favourites works!
-</p>
+<div class="container-fluid">
+  <h4 style="color: #4584be">Omiljeni diplomski radovi</h4>
+  <div class="row">
+    <div class="col-sm-3" *ngFor="let graduatePaper of graduatePaperFavourites">
+      <div class="card h-100">
+        <img
+          class="card-img-top"
+          src="/assets/graduatePaperTemplate.jpg"
+          data-toggle="modal"
+          data-target="#myModal"
+          (click)="onOpenGraduatePaper(graduatePaper.pdfFile)"
+        />
+        <div class="card-body">
+          <h5 class="card-title">
+            Naslov:<a
+              routerLink="graduate-paper/{{ graduatePaper.id }}"
+              data-toggle="modal"
+              data-target="#myModal"
+              (click)="onOpenGraduatePaper(graduatePaper.pdfFile)"
+            >
+              {{ graduatePaper.title }}</a
+            >
+          </h5>
+          <p class="card-text">
+            Autor: <i>{{ graduatePaper.author }}</i>
+          </p>
+          <p class="card-text">
+            Mentor: <i>{{ graduatePaper.mentor }}</i>
+          </p>
+          <p class="card-text">
+            Datum odbrane: <i>{{ graduatePaper.defendedOn }} god.</i>
+          </p>
+        </div>
+        <div class="card-footer">
+          <button
+            type="button"
+            class="btn btn-info btn-sm"
+            (click)="onRemoveFromFavourites(graduatePaper.id)"
+          >
+            Ukloni iz omiljenih
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div
+  class="modal"
+  id="myModal"
+  tabindex="-1"
+  role="dialog"
+  (keydown)="onKeyPress($event)"
+>
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <input
+          #queryInp
+          matInput
+          id="pdfQueryInput"
+          type="text"
+          placeholder="Pretraži diplomski rad..."
+          [value]="pdfQuery"
+          (input)="searchQueryChanged($event.target.value)"
+          (keyup.enter)="searchQueryChanged(queryInp.value)"
+        />
+        <button
+          class="btn btn-secondary btn-sm"
+          (click)="prevPage()"
+          [disabled]="page === 1"
+        >
+          <b> <</b>
+        </button>
+        <span>{{ page }} / {{ totalPages }}</span>
+        <button
+          class="btn btn-secondary btn-sm"
+          (click)="nextPage()"
+          [disabled]="page === totalPages"
+        >
+          <b>></b>
+        </button>
+        Idi na:<input type="text" name="page" id="page" [(ngModel)]="page" />
+      </div>
+      <div class="modal-body">
+        <pdf-viewer
+          [src]="pdfSrc"
+          [(page)]="page"
+          [show-all]="false"
+          (after-load-complete)="afterLoadComplete($event)"
+        ></pdf-viewer>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" data-dismiss="modal">
+          Nazad
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

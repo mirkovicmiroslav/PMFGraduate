@@ -2,6 +2,7 @@ import { FavouritesComponent } from "./favourites/favourites.component";
 import { HomepageComponent } from "./homepage/homepage.component";
 import { NgModule } from "@angular/core";
 import { Routes, RouterModule } from "@angular/router";
+import { IsUserGuard } from "../core/guards/isUser.guard";
 
 const routes: Routes = [
   {
@@ -10,7 +11,8 @@ const routes: Routes = [
   },
   {
     path: "graduate-paper/favourites",
-    component: FavouritesComponent
+    component: FavouritesComponent,
+    canActivate: [IsUserGuard]
   }
 ];
 

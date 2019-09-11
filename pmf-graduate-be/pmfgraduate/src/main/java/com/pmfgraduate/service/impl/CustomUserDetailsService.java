@@ -26,7 +26,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 	public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
 		User user = userRepository.findByEmail(email);
 		if (user == null) {
-			throw new UsernameNotFoundException(String.format("No user found with email '%s'.", email));
+			throw new UsernameNotFoundException(String.format("Ne postoji korisnik sa mail-om '%s'.", email));
 		} else {
 			Set<GrantedAuthority> grantedAuthority = new HashSet<GrantedAuthority>();
 			grantedAuthority.add(new SimpleGrantedAuthority(user.getRole()));

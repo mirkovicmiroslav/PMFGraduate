@@ -55,7 +55,7 @@ public class GraduatePaperServiceImpl implements GraduatePaperService {
 
             return new FileResponseDTO(fileId.toString());
         } catch (MultipartException e) {
-            throw new PmfGraduateException(HttpStatus.BAD_REQUEST, "Some problem...");
+            throw new PmfGraduateException(HttpStatus.BAD_REQUEST, "Veličina dokumenta je prevelika. Dozvoljena veličina je 2GB.");
         }
     }
 
@@ -77,7 +77,7 @@ public class GraduatePaperServiceImpl implements GraduatePaperService {
 
     @Override
     public GraduatePaper getByID(String id) {
-        return graduatePaperRepository.findById(id).orElseThrow(() -> new PmfGraduateException(HttpStatus.BAD_REQUEST, "Some problem..."));
+        return graduatePaperRepository.findById(id).orElseThrow(() -> new PmfGraduateException(HttpStatus.BAD_REQUEST, "Traženi diplomski rad ne postoji."));
     }
 
     @Override

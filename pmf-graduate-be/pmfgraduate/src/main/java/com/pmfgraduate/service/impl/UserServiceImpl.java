@@ -54,14 +54,14 @@ public class UserServiceImpl implements UserService {
 
             return new JwtAuthenticationResponseDTO(jwt);
         } catch (BadCredentialsException e) {
-            throw new PmfGraduateException(HttpStatus.BAD_REQUEST, "Incorrect password!");
+            throw new PmfGraduateException(HttpStatus.BAD_REQUEST, "Ne ispravna lozinka.");
         }
     }
 
     @Override
     public boolean register(RegisterDTO userRequest) {
         if (userRepository.findByEmail(userRequest.getEmail()) != null) {
-            throw new PmfGraduateException(HttpStatus.BAD_REQUEST, "Email already exist");
+            throw new PmfGraduateException(HttpStatus.BAD_REQUEST, "E-mail već postoji.");
         } else {
             User user = userMapper.map(userRequest);
             user.setPassword(passwordEncoder.encode(userRequest.getPassword()));
@@ -72,7 +72,7 @@ public class UserServiceImpl implements UserService {
             if (user != null) {
                 return true;
             } else {
-                throw new PmfGraduateException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to register!");
+                throw new PmfGraduateException(HttpStatus.INTERNAL_SERVER_ERROR, "Neuspešna registracija.");
             }
         }
     }
