@@ -173,6 +173,17 @@ export class HomepageComponent implements OnInit, OnDestroy {
     }
   }
 
+  onGetAllMentorsPDF() {
+    this.graduatePaperService.getAllMentors().subscribe(response => {
+      const pdf = new Blob([response], { type: "application/pdf" });
+      const url = window.URL.createObjectURL(pdf);
+      const anchor = document.createElement("a");
+      anchor.href = url;
+      anchor.download = "Mentori.pdf";
+      anchor.click();
+    });
+  }
+
   searchQueryChanged(newQuery: string) {
     if (newQuery !== this.pdfQuery) {
       this.pdfQuery = newQuery;

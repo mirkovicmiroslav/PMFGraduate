@@ -16,13 +16,13 @@ import lombok.Setter;
 @Document(collection = "user")
 public class User {
 
-    @Id
-    private String id;
-    private String firstName;
-    private String lastName;
-    @Indexed(unique = true)
-    private String email;
-    private String password;
-    private String role;
+	@Id
+	private String id;
+	private String firstName;
+	private String lastName;
+	@Indexed(unique = true)
+	private String email;
+	private String password;
+	private String role;
 
 }

@@ -1,13 +1,18 @@
 package com.pmfgraduate.service.impl;
 
-import com.mongodb.*;
-import com.mongodb.client.gridfs.model.GridFSFile;
-import com.pmfgraduate.dto.*;
-import com.pmfgraduate.exception.PmfGraduateException;
-import com.pmfgraduate.mapper.GraduatePaperMapper;
-import com.pmfgraduate.model.GraduatePaper;
-import com.pmfgraduate.repository.GraduatePaperRepository;
-import com.pmfgraduate.service.GraduatePaperService;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
+
 import org.apache.commons.io.IOUtils;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,110 +25,202 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartException;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.stream.Collectors;
+import com.mongodb.BasicDBObject;
+import com.mongodb.DB;
+import com.mongodb.DBCollection;
+import com.mongodb.DBObject;
+import com.mongodb.MapReduceCommand;
+import com.mongodb.MapReduceOutput;
+import com.mongodb.MongoClient;
+import com.mongodb.client.gridfs.model.GridFSFile;
+import com.pmfgraduate.dto.FileResponseDTO;
+import com.pmfgraduate.dto.GraduatePaperListDTO;
+import com.pmfgraduate.dto.MentorReportDTO;
+import com.pmfgraduate.dto.PdfFileDTO;
+import com.pmfgraduate.dto.TopMentorsDTO;
+import com.pmfgraduate.dto.TopMentorsListDTO;
+import com.pmfgraduate.exception.PmfGraduateException;
+import com.pmfgraduate.mapper.GraduatePaperMapper;
+import com.pmfgraduate.model.GraduatePaper;
+import com.pmfgraduate.repository.GraduatePaperRepository;
+import com.pmfgraduate.service.GraduatePaperService;
+
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperExportManager;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 
 @Service
 @Transactional
 public class GraduatePaperServiceImpl implements GraduatePaperService {
 
-    @Autowired
-    GridFsOperations gridFsOperations;
-    @Autowired
-    MongoClient mongoClient;
-    @Autowired
-    GraduatePaperRepository graduatePaperRepository;
-    @Autowired
-    GraduatePaperMapper graduatePaperMapper;
+	@Autowired
+	GridFsOperations gridFsOperations;
+	@Autowired
+	MongoClient mongoClient;
+	@Autowired
+	GraduatePaperRepository graduatePaperRepository;
+	@Autowired
+	GraduatePaperMapper graduatePaperMapper;
 
-    @Override
-    public FileResponseDTO saveFile(MultipartFile file) throws IOException {
-        try {
-            if (!file.getContentType().equals("application/pdf")) {
-                throw new PmfGraduateException(HttpStatus.BAD_REQUEST, "Format dokumenta mora biti pdf!");
-            }
-            DBObject metaData = new BasicDBObject();
-            metaData.put("organization", "DMI");
+	@Override
+	public FileResponseDTO saveFile(MultipartFile file) throws IOException {
+		try {
+			if (!file.getContentType().equals("application/pdf")) {
+				throw new PmfGraduateException(HttpStatus.BAD_REQUEST, "Format dokumenta mora biti pdf!");
+			}
+			DBObject metaData = new BasicDBObject();
+			metaData.put("organization", "DMI");
 
-            InputStream inputStream = file.getInputStream();
+			InputStream inputStream = file.getInputStream();
 
-            ObjectId fileId = gridFsOperations.store(inputStream, file.getOriginalFilename(), file.getContentType(), metaData);
+			ObjectId fileId = gridFsOperations.store(inputStream, file.getOriginalFilename(), file.getContentType(),
+					metaData);
 
-            return new FileResponseDTO(fileId.toString());
-        } catch (MultipartException e) {
-            throw new PmfGraduateException(HttpStatus.BAD_REQUEST, "Veličina dokumenta je prevelika. Dozvoljena veličina je 2GB.");
-        }
-    }
+			return new FileResponseDTO(fileId.toString());
+		} catch (MultipartException e) {
+			throw new PmfGraduateException(HttpStatus.BAD_REQUEST,
+					"Veličina dokumenta je prevelika. Dozvoljena veličina je 2GB.");
+		}
+	}
 
-    @Override
-    public boolean saveGraduatePaper(GraduatePaper graduatePaper) {
-        graduatePaperRepository.save(graduatePaper);
+	@Override
+	public boolean saveGraduatePaper(GraduatePaper graduatePaper) {
+		graduatePaperRepository.save(graduatePaper);
 
-        return true;
-    }
+		return true;
+	}
 
-    @Override
-    public GraduatePaperListDTO getAllGraduatePapers() {
-        GraduatePaperListDTO graduatePaperListDTO = new GraduatePaperListDTO();
+	@Override
+	public GraduatePaperListDTO getAllGraduatePapers() {
+		GraduatePaperListDTO graduatePaperListDTO = new GraduatePaperListDTO();
 
-        graduatePaperRepository.findAll().forEach(graduatePaper -> { graduatePaperListDTO.getGraduatePapers().add(graduatePaperMapper.map(graduatePaper)); });
+		graduatePaperRepository.findAll().forEach(graduatePaper -> {
+			graduatePaperListDTO.getGraduatePapers().add(graduatePaperMapper.map(graduatePaper));
+		});
 
-        return graduatePaperListDTO;
-    }
+		return graduatePaperListDTO;
+	}
 
-    @Override
-    public GraduatePaper getByID(String id) {
-        return graduatePaperRepository.findById(id).orElseThrow(() -> new PmfGraduateException(HttpStatus.BAD_REQUEST, "Traženi diplomski rad ne postoji."));
-    }
+	@Override
+	public GraduatePaper getByID(String id) {
+		return graduatePaperRepository.findById(id).orElseThrow(
+				() -> new PmfGraduateException(HttpStatus.BAD_REQUEST, "Traženi diplomski rad ne postoji."));
+	}
 
-    @Override
-    public PdfFileDTO getGraduatePaperPdf(String id) throws IOException {
-        GridFSFile gridFsFile = gridFsOperations.findOne(new Query(Criteria.where("_id").is(id)));
+	@Override
+	public PdfFileDTO getGraduatePaperPdf(String id) throws IOException {
+		GridFSFile gridFsFile = gridFsOperations.findOne(new Query(Criteria.where("_id").is(id)));
 
-        return new PdfFileDTO(IOUtils.toByteArray(gridFsOperations.getResource(gridFsFile).getInputStream()));
-    }
+		return new PdfFileDTO(IOUtils.toByteArray(gridFsOperations.getResource(gridFsFile).getInputStream()));
+	}
 
-    @Override
-    public GraduatePaperListDTO getSearchedFilter(String title, String author, String mentor) {
-        GraduatePaperListDTO graduatePaperListDTO = new GraduatePaperListDTO();
+	@Override
+	public GraduatePaperListDTO getSearchedFilter(String title, String author, String mentor) {
+		GraduatePaperListDTO graduatePaperListDTO = new GraduatePaperListDTO();
 
-        graduatePaperRepository.findByTitleIgnoreCaseLikeAndAuthorIgnoreCaseLikeAndMentorIgnoreCaseLike(title, author, mentor).forEach(graduatePaper -> { graduatePaperListDTO.getGraduatePapers().add(graduatePaperMapper.map(graduatePaper)); });
+		graduatePaperRepository
+				.findByTitleIgnoreCaseLikeAndAuthorIgnoreCaseLikeAndMentorIgnoreCaseLike(title, author, mentor)
+				.forEach(graduatePaper -> {
+					graduatePaperListDTO.getGraduatePapers().add(graduatePaperMapper.map(graduatePaper));
+				});
 
-        return graduatePaperListDTO;
-    }
+		return graduatePaperListDTO;
+	}
 
-    @Override
-    public TopMentorsListDTO getTopMentors() {
-        List<TopMentorsDTO> mentorsList = new ArrayList<>();
+	@Override
+	public TopMentorsListDTO getTopMentors() {
+		return new TopMentorsListDTO(helper().getMentors().stream().limit(5).collect(Collectors.toList()));
+	}
 
-        DB db = mongoClient.getDB("pmf-graduate");
-        DBCollection collection = db.getCollection("graduate-paper");
+	@Override
+	public byte[] getAllMentors() {
+		List<GraduatePaper> findAllMentorsAndMembersOfBoard = graduatePaperRepository.findAllMentorsAndMembersOfBoard();
+		List<MentorReportDTO> mentorsReportDTOList = new ArrayList<>();
 
-        String map = "function() {emit(this.mentor, 1);};";
-        String reduce = "function(key, values) { return Array.sum(values);};";
+		Map<String, Integer> map = new HashMap<>();
+		TopMentorsListDTO topMentorsListDTO = helper();
+		int mentorCount = 0;
+		for (GraduatePaper mentors : findAllMentorsAndMembersOfBoard) {
+			MentorReportDTO mentorsReportDTO = new MentorReportDTO();
+			map.put(mentors.getMentor(), 0);
+			for (GraduatePaper members : findAllMentorsAndMembersOfBoard) {
+				if (mentors.getMentor().equals(members.getPresident())) {
+					map.put(mentors.getMentor(), map.get(mentors.getMentor()) + 1);
+				}
+				if (mentors.getMentor().equals(members.getMemberFirst())) {
+					map.put(mentors.getMentor(), map.get(mentors.getMentor()) + 1);
+				}
+				if (mentors.getMentor().equals(members.getMemberSecond())) {
+					map.put(mentors.getMentor(), map.get(mentors.getMentor()) + 1);
+				}
+			}
+			for (TopMentorsDTO topMentorsDTO : topMentorsListDTO.getMentors()) {
+				if (topMentorsDTO.getName().equals(mentors.getMentor())) {
+					mentorCount = topMentorsDTO.getCount();
+				}
+			}
+			mentorsReportDTO.setMentor(mentors.getMentor());
+			mentorsReportDTO.setMentorCount(mentorCount);
+			mentorsReportDTO.setMemberOfBoard(map.get(mentors.getMentor()));
 
-        MapReduceCommand cmd = new MapReduceCommand(collection, map, reduce,
-                null, MapReduceCommand.OutputType.INLINE, null);
+			mentorsReportDTOList.add(mentorsReportDTO);
+		}
 
-        MapReduceOutput out = collection.mapReduce(cmd);
+		mentorsReportDTOList = mentorsReportDTOList.stream().filter(distinctByKey(MentorReportDTO::getMentor))
+				.sorted(Comparator.comparingInt(MentorReportDTO::getMentorCount)
+						.thenComparing(MentorReportDTO::getMemberOfBoard).reversed())
+				.collect(Collectors.toList());
 
-        for (DBObject o : out.results()) {
-            TopMentorsDTO topMentorsDTO = new TopMentorsDTO();
-            String replaceString = o.toMap().values().toString().replace("[", "").replace("]", "");
-            String[] splitMap = replaceString.split(",");
+		JRBeanCollectionDataSource dataSource = new JRBeanCollectionDataSource(mentorsReportDTOList);
+		InputStream inputStream = this.getClass().getResourceAsStream("/jasperreports/rpt_mentors.jasper");
+		JasperPrint jasperPrint = null;
+		byte[] reportBytes = null;
+		try {
+			jasperPrint = JasperFillManager.fillReport(inputStream, new HashMap<>(), dataSource);
+			inputStream.close();
 
-            topMentorsDTO.setName(splitMap[0]);
-            topMentorsDTO.setCount((int) Double.parseDouble(splitMap[1].trim()));
-            mentorsList.add(topMentorsDTO);
-        }
-        mentorsList = mentorsList.stream().sorted(Comparator.comparing(TopMentorsDTO::getCount).reversed()).limit(5).collect(Collectors.toList());
+			reportBytes = JasperExportManager.exportReportToPdf(jasperPrint);
+		} catch (JRException | IOException e) {
+			e.printStackTrace();
+		}
 
-        return new TopMentorsListDTO(mentorsList);
-    }
+		return reportBytes;
+	}
 
+	private TopMentorsListDTO helper() {
+		List<TopMentorsDTO> mentorsList = new ArrayList<>();
+
+		DB db = mongoClient.getDB("pmf-graduate");
+		DBCollection collection = db.getCollection("graduate-paper");
+
+		String map = "function() {emit(this.mentor, 1);};";
+		String reduce = "function(key, values) { return Array.sum(values);};";
+
+		MapReduceCommand cmd = new MapReduceCommand(collection, map, reduce, null, MapReduceCommand.OutputType.INLINE,
+				null);
+
+		MapReduceOutput out = collection.mapReduce(cmd);
+
+		for (DBObject o : out.results()) {
+			TopMentorsDTO topMentorsDTO = new TopMentorsDTO();
+			String replaceString = o.toMap().values().toString().replace("[", "").replace("]", "");
+			String[] splitMap = replaceString.split(",");
+
+			topMentorsDTO.setName(splitMap[0]);
+			topMentorsDTO.setCount((int) Double.parseDouble(splitMap[1].trim()));
+			mentorsList.add(topMentorsDTO);
+		}
+		mentorsList = mentorsList.stream().sorted(Comparator.comparing(TopMentorsDTO::getCount).reversed())
+				.collect(Collectors.toList());
+
+		return new TopMentorsListDTO(mentorsList);
+	}
+
+	public static <T> Predicate<T> distinctByKey(Function<? super T, ?> keyExtractor) {
+		Set<Object> seen = ConcurrentHashMap.newKeySet();
+		return t -> seen.add(keyExtractor.apply(t));
+	}
 
 }

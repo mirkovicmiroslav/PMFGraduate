@@ -11,6 +11,6 @@ import lombok.Setter;
 @NoArgsConstructor
 public class PdfFileDTO {
 
-    private byte[] pdfBytes;
+	private byte[] pdfBytes;
 
 }

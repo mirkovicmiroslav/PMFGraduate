@@ -11,5 +11,5 @@ import lombok.Setter;
 @NoArgsConstructor
 public class FileResponseDTO {
 
-    private String fileId;
+	private String fileId;
 }

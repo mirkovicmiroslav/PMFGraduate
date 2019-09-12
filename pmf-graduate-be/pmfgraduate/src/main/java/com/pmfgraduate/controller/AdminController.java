@@ -1,7 +1,9 @@
 package com.pmfgraduate.controller;
 
-import com.pmfgraduate.model.GraduatePaper;
-import com.pmfgraduate.service.GraduatePaperService;
+import java.io.IOException;
+
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -11,8 +13,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.validation.Valid;
-import java.io.IOException;
+import com.pmfgraduate.model.GraduatePaper;
+import com.pmfgraduate.service.GraduatePaperService;
 
 @RequestMapping("api/admin")
 @RestController

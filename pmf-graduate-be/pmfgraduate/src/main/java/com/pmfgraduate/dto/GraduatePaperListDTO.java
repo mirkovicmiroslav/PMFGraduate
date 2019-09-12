@@ -1,21 +1,20 @@
 package com.pmfgraduate.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 
 @Getter
 @Setter
 @AllArgsConstructor
 public class GraduatePaperListDTO {
 
-    private List<GraduatePaperDTO> graduatePapers;
+	private List<GraduatePaperDTO> graduatePapers;
 
-    public GraduatePaperListDTO(){
-        this.graduatePapers = new ArrayList<>();
-    }
+	public GraduatePaperListDTO() {
+		this.graduatePapers = new ArrayList<>();
+	}
 }

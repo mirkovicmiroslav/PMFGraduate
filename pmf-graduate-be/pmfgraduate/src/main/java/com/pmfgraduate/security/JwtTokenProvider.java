@@ -72,12 +72,8 @@ public class JwtTokenProvider {
 		Claims claims = Jwts.claims().setSubject(userDetails.getUsername());
 		claims.put("roles", userDetails.getAuthorities());
 
-		return Jwts.builder()
-				.setClaims(claims)
-				.setIssuedAt(now)
-				.setExpiration(expiryDate)
-				.signWith(SIGNATURE_ALGORITHM, jwtSecret)
-				.compact();
+		return Jwts.builder().setClaims(claims).setIssuedAt(now).setExpiration(expiryDate)
+				.signWith(SIGNATURE_ALGORITHM, jwtSecret).compact();
 	}
 
 	public String resolveToken(HttpServletRequest req) {

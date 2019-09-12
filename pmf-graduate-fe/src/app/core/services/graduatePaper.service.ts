@@ -40,4 +40,10 @@ export class GraduatePaperService {
       }
     );
   }
+
+  public getAllMentors(): Observable<any> {
+    return this.http.get(environment.url + "api/reports/getAllMentors", {
+      responseType: "blob"
+    });
+  }
 }

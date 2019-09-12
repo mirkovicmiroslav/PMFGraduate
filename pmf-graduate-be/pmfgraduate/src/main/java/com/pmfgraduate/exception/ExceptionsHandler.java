@@ -1,5 +1,8 @@
 package com.pmfgraduate.exception;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.fileupload.FileUploadBase.FileSizeLimitExceededException;
@@ -12,15 +15,9 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.multipart.MultipartException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 @ControllerAdvice
 public class ExceptionsHandler extends ResponseEntityExceptionHandler {
@@ -35,25 +32,26 @@ public class ExceptionsHandler extends ResponseEntityExceptionHandler {
 
 	@ExceptionHandler(FileSizeLimitExceededException.class)
 	public final ResponseEntity<?> uploadedAFileTooLarge(FileSizeLimitExceededException e) {
-		System.out.println("b");
+		log.error("Error caught: " + e.getMessage(), e);
 		return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 
 	@ExceptionHandler(MultipartException.class)
 	public final ResponseEntity<?> handleFileException(HttpServletRequest request, Throwable ex) {
-		System.out.println("a");
+		log.error("Error caught: " + ex.getMessage(), ex);
 		return new ResponseEntity<>(ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 
 	@ExceptionHandler(Exception.class)
 	public final ResponseEntity<?> handleAnyException(Exception ex) {
 		log.error("Error caught: " + ex.getMessage(), ex);
-		System.out.println("c");
 		return new ResponseEntity<>(ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 
 	@Override
-	protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
+	protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
+			HttpHeaders headers, HttpStatus status, WebRequest request) {
+		log.error("Error caught: " + ex.getMessage(), ex);
 		Map<String, String> errors = new HashMap<>();
 		ex.getBindingResult().getAllErrors().forEach((error) -> {
 			String fieldName = ((FieldError) error).getField();

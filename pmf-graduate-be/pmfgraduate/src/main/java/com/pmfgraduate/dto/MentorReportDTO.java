@@ -7,11 +7,12 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@NoArgsConstructor
 @AllArgsConstructor
-public class TopMentorsDTO {
+@NoArgsConstructor
+public class MentorReportDTO {
 
-	private String name;
-	private int count;
+	private String mentor;
+	private int mentorCount;
+	private int memberOfBoard;
 
 }
