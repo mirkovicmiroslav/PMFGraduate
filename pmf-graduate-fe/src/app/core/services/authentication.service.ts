@@ -1,3 +1,4 @@
+import { TokenService } from "src/app/core/services/token.service";
 import { User } from "./../models/user.model";
 import { environment } from "./../../../environments/environment";
 import { Injectable } from "@angular/core";
@@ -9,7 +10,7 @@ import { JwtHelperService } from "@auth0/angular-jwt";
   providedIn: "root"
 })
 export class AuthenticationService {
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private tokenService: TokenService) {}
 
   public login(loginData: User): Observable<any> {
     return this.http.post(environment.url + "api/auth/login", loginData);
@@ -20,15 +21,15 @@ export class AuthenticationService {
   }
 
   public isAuthenticated(): boolean {
-    if (localStorage.getItem("token")) {
+    if (this.tokenService.getToken()) {
       return true;
     }
     return false;
   }
 
-  public isUser() {
+  public isUser(): boolean {
     const helper = new JwtHelperService();
-    const decodedToken = helper.decodeToken(localStorage.getItem("token"));
+    const decodedToken = helper.decodeToken(this.tokenService.getToken());
     if (decodedToken != null) {
       if (decodedToken.roles[0].authority == "USER") {
         return true;
@@ -37,9 +38,9 @@ export class AuthenticationService {
     return false;
   }
 
-  public isAdmin() {
+  public isAdmin(): boolean {
     const helper = new JwtHelperService();
-    const decodedToken = helper.decodeToken(localStorage.getItem("token"));
+    const decodedToken = helper.decodeToken(this.tokenService.getToken());
     if (decodedToken != null) {
       if (decodedToken.roles[0].authority == "ADMIN") {
         return true;

@@ -22,18 +22,18 @@ import io.jsonwebtoken.SignatureAlgorithm;
 public class JwtTokenProvider {
 
 	@Value("${security.jwt.token.secret-key:JWTSuperSecretKey}")
-	private String jwtSecret = "JWTSuperSecretKey";
+	private String jwtSecret;
 
-	@Value("${security.jwt.token.expire-length:3600000}")
-	private long jwtExpirationInMs = 3600000;
+	@Value("${security.jwt.token.expire-length:360000}")
+	private long jwtExpirationInMs;
+
+	private SignatureAlgorithm SIGNATURE_ALGORITHM = SignatureAlgorithm.HS512;
+
+	Date dateNow = new Date();
+	Date expiryDate = new Date(dateNow.getTime() + jwtExpirationInMs);
 
 	@Autowired
 	private UserDetailsService userDetailsService;
-
-	Date now = new Date();
-	Date expiryDate = new Date(now.getTime() + jwtExpirationInMs);
-
-	private SignatureAlgorithm SIGNATURE_ALGORITHM = SignatureAlgorithm.HS512;
 
 	public String getEmailFromToken(String token) {
 		String email;
@@ -56,23 +56,11 @@ public class JwtTokenProvider {
 		return claims;
 	}
 
-	public Date getIssuedAtDateFromToken(String token) {
-		Date issueAt;
-		try {
-			final Claims claims = this.getAllClaimsFromToken(token);
-			issueAt = claims.getIssuedAt();
-		} catch (Exception e) {
-			issueAt = null;
-		}
-		return issueAt;
-	}
-
 	public String createToken(UserDetails userDetails) {
-
 		Claims claims = Jwts.claims().setSubject(userDetails.getUsername());
 		claims.put("roles", userDetails.getAuthorities());
 
-		return Jwts.builder().setClaims(claims).setIssuedAt(now).setExpiration(expiryDate)
+		return Jwts.builder().setClaims(claims).setIssuedAt(dateNow).setExpiration(expiryDate)
 				.signWith(SIGNATURE_ALGORITHM, jwtSecret).compact();
 	}
 
@@ -80,7 +68,7 @@ public class JwtTokenProvider {
 		String bearerToken = req.getHeader("Authorization");
 
 		if (bearerToken != null && bearerToken.startsWith("Bearer "))
-			return bearerToken.substring(7, bearerToken.length());
+			return bearerToken.substring(7);
 
 		return null;
 	}
@@ -93,11 +81,7 @@ public class JwtTokenProvider {
 	public boolean validateToken(String token) {
 		try {
 			Jws<Claims> claims = Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token);
-
-			if (claims.getBody().getExpiration().before(new Date()))
-				return false;
-
-			return true;
+			return !claims.getBody().getExpiration().before(dateNow);
 		} catch (JwtException | IllegalArgumentException e) {
 			return false;
 		}

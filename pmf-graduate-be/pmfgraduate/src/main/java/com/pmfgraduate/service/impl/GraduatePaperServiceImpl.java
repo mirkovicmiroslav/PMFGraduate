@@ -110,10 +110,14 @@ public class GraduatePaperServiceImpl implements GraduatePaperService {
 	}
 
 	@Override
-	public PdfFileDTO getGraduatePaperPdf(String id) throws IOException {
-		GridFSFile gridFsFile = gridFsOperations.findOne(new Query(Criteria.where("_id").is(id)));
+	public PdfFileDTO getGraduatePaperPdf(String id) {
+		try {
+			GridFSFile gridFsFile = gridFsOperations.findOne(new Query(Criteria.where("_id").is(id)));
 
-		return new PdfFileDTO(IOUtils.toByteArray(gridFsOperations.getResource(gridFsFile).getInputStream()));
+			return new PdfFileDTO(IOUtils.toByteArray(gridFsOperations.getResource(gridFsFile).getInputStream()));
+		} catch(IOException e){
+			throw new PmfGraduateException(HttpStatus.BAD_REQUEST, "Traženi diplomski rad ne postoji.");
+		}
 	}
 
 	@Override
@@ -148,9 +152,11 @@ public class GraduatePaperServiceImpl implements GraduatePaperService {
 			for (GraduatePaper members : findAllMentorsAndMembersOfBoard) {
 				if (mentors.getMentor().equals(members.getPresident())) {
 					map.put(mentors.getMentor(), map.get(mentors.getMentor()) + 1);
+					continue;
 				}
 				if (mentors.getMentor().equals(members.getMemberFirst())) {
 					map.put(mentors.getMentor(), map.get(mentors.getMentor()) + 1);
+					continue;
 				}
 				if (mentors.getMentor().equals(members.getMemberSecond())) {
 					map.put(mentors.getMentor(), map.get(mentors.getMentor()) + 1);
@@ -183,7 +189,7 @@ public class GraduatePaperServiceImpl implements GraduatePaperService {
 
 			reportBytes = JasperExportManager.exportReportToPdf(jasperPrint);
 		} catch (JRException | IOException e) {
-			e.printStackTrace();
+			throw new PmfGraduateException(HttpStatus.BAD_REQUEST, "Greška na serveru.");
 		}
 
 		return reportBytes;

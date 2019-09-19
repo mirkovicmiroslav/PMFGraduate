@@ -14,11 +14,11 @@
 	<title>
 		<band height="50" splitType="Stretch">
 			<staticText>
-				<reportElement x="240" y="20" width="110" height="30" uuid="ed00aa1e-16a0-476d-baa6-2c37f895423a"/>
+				<reportElement x="155" y="20" width="250" height="30" forecolor="#4584BE" uuid="ed00aa1e-16a0-476d-baa6-2c37f895423a"/>
 				<textElement textAlignment="Center">
 					<font size="16" isBold="true"/>
 				</textElement>
-				<text><![CDATA[Mentorstvo]]></text>
+				<text><![CDATA[Pregled mentorstva]]></text>
 			</staticText>
 		</band>
 	</title>
@@ -28,7 +28,7 @@
 	<columnHeader>
 		<band height="61" splitType="Stretch">
 			<staticText>
-				<reportElement mode="Transparent" x="50" y="31" width="100" height="30" backcolor="#F5F8FA" uuid="b480372d-0c61-482d-98c1-726541a318ea">
+				<reportElement mode="Opaque" x="50" y="31" width="130" height="30" forecolor="#FFFFFF" backcolor="#4584BE" uuid="b480372d-0c61-482d-98c1-726541a318ea">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="953ce61c-a94c-4b86-94bd-dcd6805c5a02"/>
 				</reportElement>
 				<box padding="0">
@@ -37,10 +37,10 @@
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="14" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false"/>
 				</textElement>
-				<text><![CDATA[Mentor]]></text>
+				<text><![CDATA[Profesor]]></text>
 			</staticText>
 			<staticText>
-				<reportElement mode="Transparent" x="180" y="31" width="200" height="30" backcolor="#F5F8FA" uuid="7bbf8b61-1c51-4539-a577-f3e24898d4da">
+				<reportElement mode="Opaque" x="180" y="31" width="220" height="30" forecolor="#FFFFFF" backcolor="#4584BE" uuid="7bbf8b61-1c51-4539-a577-f3e24898d4da">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="27e3fd74-60c5-4bca-ae79-32406ff012af"/>
 				</reportElement>
 				<box padding="0">
@@ -49,10 +49,10 @@
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="14" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false"/>
 				</textElement>
-				<text><![CDATA[Broj mentorisanja]]></text>
+				<text><![CDATA[Broj mentorstva]]></text>
 			</staticText>
 			<staticText>
-				<reportElement mode="Transparent" x="350" y="31" width="200" height="30" backcolor="#F5F8FA" uuid="b9a1500e-abb1-4c27-8e70-f30ba07286d8">
+				<reportElement mode="Opaque" x="380" y="31" width="190" height="30" forecolor="#FFFFFF" backcolor="#4584BE" uuid="b9a1500e-abb1-4c27-8e70-f30ba07286d8">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="c33235c9-c686-43f8-9f96-698e87fa318d"/>
 				</reportElement>
 				<box padding="0">
@@ -61,7 +61,7 @@
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="14" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false"/>
 				</textElement>
-				<text><![CDATA[Član komisije]]></text>
+				<text><![CDATA[Broj članstva u komisiji]]></text>
 			</staticText>
 		</band>
 	</columnHeader>
@@ -101,9 +101,6 @@
 			</textField>
 		</band>
 	</detail>
-	<columnFooter>
-		<band height="13" splitType="Stretch"/>
-	</columnFooter>
 	<pageFooter>
 		<band height="54" splitType="Stretch">
 			<textField>
@@ -120,13 +117,13 @@
 				<textFieldExpression><![CDATA[$V{REPORT_COUNT}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="10" y="9" width="150" height="30" uuid="3fbe5b9b-6f94-4f61-9abb-cf0f46f3c1f8">
+				<reportElement x="10" y="9" width="150" height="30" forecolor="#4584BE" uuid="3fbe5b9b-6f94-4f61-9abb-cf0f46f3c1f8">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="953ce61c-a94c-4b86-94bd-dcd6805c5a02"/>
 				</reportElement>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="12" isBold="true"/>
 				</textElement>
-				<text><![CDATA[Ukupno mentora: ]]></text>
+				<text><![CDATA[Ukupno profesora: ]]></text>
 			</staticText>
 		</band>
 	</summary>

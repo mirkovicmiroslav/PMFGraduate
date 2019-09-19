@@ -5,8 +5,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -19,7 +17,6 @@ import com.pmfgraduate.exception.PmfGraduateException;
 import com.pmfgraduate.mapper.UserMapper;
 import com.pmfgraduate.model.User;
 import com.pmfgraduate.repository.UserRepository;
-import com.pmfgraduate.security.AuthenticatedUser;
 import com.pmfgraduate.security.JwtTokenProvider;
 import com.pmfgraduate.service.UserService;
 
@@ -38,17 +35,13 @@ public class UserServiceImpl implements UserService {
 	@Autowired
 	JwtTokenProvider jwtTokenProvider;
 	@Autowired
-	AuthenticatedUser authentication;
-	@Autowired
 	UserMapper userMapper;
 
 	@Override
 	public JwtAuthenticationResponseDTO login(LoginDTO userRequest) {
 		try {
-			Authentication authentication = authenticationManager.authenticate(
+			authenticationManager.authenticate(
 					new UsernamePasswordAuthenticationToken(userRequest.getEmail(), userRequest.getPassword()));
-			SecurityContextHolder.getContext().setAuthentication(authentication);
-
 			UserDetails userDetails = customUserDetailsService.loadUserByUsername(userRequest.getEmail());
 
 			String jwt = jwtTokenProvider.createToken(userDetails);

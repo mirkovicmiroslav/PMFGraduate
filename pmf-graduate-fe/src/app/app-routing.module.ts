@@ -1,26 +1,26 @@
-import { IsAdminGuard } from "./core/guards/isAdmin.guard";
-import { NgModule } from "@angular/core";
-import { Routes, RouterModule } from "@angular/router";
+import { IsAdminGuard } from './core/guards/isAdmin.guard';
+import { NgModule } from '@angular/core';
+import { Routes, RouterModule } from '@angular/router';
 
 const routes: Routes = [
   {
-    path: "",
+    path: '',
     loadChildren:
-      "./graduate-papers/graduate-papers.module#GraduatePapersModule"
+      './graduate-papers/graduate-papers.module#GraduatePapersModule'
   },
   {
-    path: "",
-    loadChildren: "./authentication/authentication.module#AuthenticationModule"
+    path: '',
+    loadChildren: './authentication/authentication.module#AuthenticationModule'
   },
   {
-    path: "admin",
+    path: 'admin',
     loadChildren:
-      "./admin-management/admin-management.module#AdminManagementModule",
+      './admin-management/admin-management.module#AdminManagementModule',
     canActivate: [IsAdminGuard]
   },
   {
-    path: "**",
-    redirectTo: "/"
+    path: '**',
+    redirectTo: '/'
   }
 ];
 

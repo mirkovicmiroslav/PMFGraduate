@@ -29,7 +29,7 @@ export class LoginComponent implements OnInit {
         this.router.navigate(["/"]);
       },
       error => {
-        this.toastr.error(error.error, "Unable to login");
+        this.toastr.error(error.error);
       }
     );
   }

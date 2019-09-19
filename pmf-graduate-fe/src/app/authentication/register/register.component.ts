@@ -23,15 +23,15 @@ export class RegisterComponent implements OnInit {
 
   onRegister() {
     if (this.rPassword !== this.userData.password) {
-      this.toastr.error("Passwords do not match!", "Unable to register");
+      this.toastr.error("Lozinke nisu jednake!");
     } else {
       this.authService.register(this.userData).subscribe(
         response => {
-          this.toastr.success("Successfully registration");
+          this.toastr.success("Uspešna registracija.");
           this.router.navigate(["/login"]);
         },
         error => {
-          this.toastr.error(error.error, "Unable to register");
+          this.toastr.error(error.error);
         }
       );
     }

@@ -16,7 +16,7 @@ public class ReportController {
 	GraduatePaperService graduatePaperService;
 
 	@GetMapping("getAllMentors")
-	public ResponseEntity<byte[]> exportMentorsToPDF() throws Exception {
+	public ResponseEntity<byte[]> exportMentorsToPDF() {
 		return ResponseEntity.ok().header("Content-Type", "application/pdf; charset=UTF-8")
 				.header("Content-Disposition", "inline; filename=\"mentors.pdf\"")
 				.body(graduatePaperService.getAllMentors());

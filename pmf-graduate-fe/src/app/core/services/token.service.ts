@@ -6,11 +6,11 @@ import { Injectable } from "@angular/core";
 export class TokenService {
   constructor() {}
 
-  getToken(): String {
+  getToken(): string {
     return window.localStorage["token"];
   }
 
-  saveToken(token: String) {
+  saveToken(token: string) {
     window.localStorage["token"] = token;
   }
 

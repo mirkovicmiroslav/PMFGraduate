@@ -120,7 +120,7 @@ export class HomepageComponent implements OnInit, OnDestroy {
     });
   }
 
-  base64ToArrayBuffer(base64) {
+  base64ToArrayBuffer(base64: any) {
     let binary_string = window.atob(base64);
     let len = binary_string.length;
     let bytes = new Uint8Array(len);

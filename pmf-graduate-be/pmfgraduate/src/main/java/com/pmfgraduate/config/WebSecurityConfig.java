@@ -31,7 +31,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	CustomUserDetailsService customUserDetailsService;
 
 	@Autowired
-	private JwtAuthenticationEntryPoint unauthorizedHandler;
+	JwtAuthenticationEntryPoint unauthorizedHandler;
 
 	@Autowired
 	JwtTokenProvider jwtTokenProvider;
@@ -72,7 +72,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 				.antMatchers("/api/auth/**", "/api/graduatePapers/**", "/api/reports/**").permitAll()
 				.anyRequest().authenticated().and().addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider),
 						UsernamePasswordAuthenticationFilter.class);
-
 	}
 
 }
