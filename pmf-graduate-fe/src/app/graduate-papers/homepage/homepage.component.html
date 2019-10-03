@@ -14,7 +14,7 @@
     class="btn btn-outline-secondary"
     (click)="onGetAllMentorsPDF()"
   >
-    Pregled mentorstva(PDF)
+    Pregled mentorstva (PDF)
   </button>
 </div>
 <div class="container-fluid">
@@ -46,67 +46,70 @@
             #mentorSearchInput
           />
         </div>
-        <div class="col-lg-3 col-md-3 col-sm-12 p-0">
-          <input
-            type="text"
-            class="form-control"
-            placeholder="Unesi reči iz rada"
-            #bookSearchInput
-          />
-        </div>
       </div>
     </div>
 
     <br /><br />
-    <div class="row">
-      <div
-        class="col-sm-3"
-        *ngFor="let graduatePaper of graduatePaperList.graduatePapers"
-      >
-        <div class="card h-100">
-          <img
-            class="card-img-top"
-            src="/assets/graduatePaperTemplate.jpg"
-            data-toggle="modal"
-            data-target="#myModal"
-            (click)="onOpenGraduatePaper(graduatePaper.pdfFile)"
-          />
-          <div class="card-body">
-            <h5 class="card-title">
-              Naslov:<a
-                routerLink="graduate-paper/{{ graduatePaper.id }}"
-                data-toggle="modal"
-                data-target="#myModal"
-                (click)="onOpenGraduatePaper(graduatePaper.pdfFile)"
-              >
-                {{ graduatePaper.title }}</a
-              >
-            </h5>
-            <p class="card-text">
-              Autor: <i>{{ graduatePaper.author }}</i>
-            </p>
-            <p class="card-text">
-              Mentor: <i>{{ graduatePaper.mentor }}</i>
-            </p>
-            <p class="card-text">
-              Datum odbrane: <i>{{ graduatePaper.defendedOn }} god.</i>
-            </p>
+
+    <div
+      class="col-sm-3"
+      *ngFor="let graduatePaper of graduatePaperList.graduatePapers"
+    >
+      <div class="card h-100">
+        <div class="container">
+          <a href="#">
+            <img
+              class="card-img-top"
+              src="/assets/graduatePaperTemplate.jpg"
+              data-toggle="modal"
+              data-target="#myModal"
+              width="280px"
+              height="375px"
+              (click)="onOpenGraduatePaper(graduatePaper.pdfFile)"
+            />
+          </a>
+          <div class="top">
+            <h5>{{ graduatePaper.author }}</h5>
           </div>
-          <div
-            class="card-footer"
-            *ngIf="
-              activeAddToFavourites.includes(graduatePaper.id) &&
-              !authService.isAdmin()
-            "
-          >
-            <button
-              type="button"
-              class="btn btn-info btn-sm"
-              (click)="onAddToFavourites(graduatePaper)"
+          <div class="centered">
+            <h5>{{ graduatePaper.title }}</h5>
+          </div>
+        </div>
+        <div class="card-body">
+          <h5 class="card-title">
+            Naslov:<a
+              routerLink="graduate-paper/{{ graduatePaper.id }}"
+              data-toggle="modal"
+              data-target="#myModal"
+              (click)="onOpenGraduatePaper(graduatePaper.pdfFile)"
             >
-              Dodaj u omiljene
-            </button>
-          </div>
+              {{ graduatePaper.title }}</a
+            >
+          </h5>
+          <p class="card-text">
+            Autor: <i>{{ graduatePaper.author }}</i>
+          </p>
+          <p class="card-text">
+            Mentor: <i>{{ graduatePaper.mentor }}</i>
+          </p>
+          <p class="card-text">
+            Datum odbrane: <i>{{ graduatePaper.publicationYear }} god.</i>
+          </p>
+        </div>
+        <div
+          class="card-footer"
+          *ngIf="
+            activeAddToFavourites.includes(graduatePaper.id) &&
+            !authService.isAdmin()
+          "
+        >
+          <button
+            type="button"
+            class="btn btn-info btn-sm"
+            (click)="onAddToFavourites(graduatePaper)"
+          >
+            Dodaj u omiljene
+          </button>
         </div>
       </div>
     </div>

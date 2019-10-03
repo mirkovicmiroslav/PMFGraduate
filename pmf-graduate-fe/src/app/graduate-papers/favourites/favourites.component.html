@@ -3,13 +3,23 @@
   <div class="row">
     <div class="col-sm-3" *ngFor="let graduatePaper of graduatePaperFavourites">
       <div class="card h-100">
-        <img
-          class="card-img-top"
-          src="/assets/graduatePaperTemplate.jpg"
-          data-toggle="modal"
-          data-target="#myModal"
-          (click)="onOpenGraduatePaper(graduatePaper.pdfFile)"
-        />
+        <div class="container">
+          <img
+            class="card-img-top"
+            src="/assets/graduatePaperTemplate.jpg"
+            data-toggle="modal"
+            data-target="#myModal"
+            width="280px"
+            height="375px"
+            (click)="onOpenGraduatePaper(graduatePaper.pdfFile)"
+          />
+          <div class="top">
+            <h5>{{ graduatePaper.author }}</h5>
+          </div>
+          <div class="centered">
+            <h5>{{ graduatePaper.title }}</h5>
+          </div>
+        </div>
         <div class="card-body">
           <h5 class="card-title">
             Naslov:<a
@@ -28,7 +38,7 @@
             Mentor: <i>{{ graduatePaper.mentor }}</i>
           </p>
           <p class="card-text">
-            Datum odbrane: <i>{{ graduatePaper.defendedOn }} god.</i>
+            Datum odbrane: <i>{{ graduatePaper.publicationYear }} god.</i>
           </p>
         </div>
         <div class="card-footer">

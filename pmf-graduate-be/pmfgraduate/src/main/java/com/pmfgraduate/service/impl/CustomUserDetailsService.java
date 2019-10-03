@@ -15,11 +15,11 @@ import org.springframework.transaction.annotation.Transactional;
 import com.pmfgraduate.model.User;
 import com.pmfgraduate.repository.UserRepository;
 
-@Service("userDetailsService")
+@Service
 public class CustomUserDetailsService implements UserDetailsService {
 
 	@Autowired
-	private UserRepository userRepository;
+	UserRepository userRepository;
 
 	@Override
 	@Transactional

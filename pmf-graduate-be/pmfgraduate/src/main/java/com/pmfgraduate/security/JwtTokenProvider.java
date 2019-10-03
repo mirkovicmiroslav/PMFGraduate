@@ -1,9 +1,7 @@
 package com.pmfgraduate.security;
 
-import java.util.Date;
-
-import javax.servlet.http.HttpServletRequest;
-
+import com.pmfgraduate.service.impl.CustomUserDetailsService;
+import io.jsonwebtoken.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -12,19 +10,16 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jws;
-import io.jsonwebtoken.JwtException;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import javax.servlet.http.HttpServletRequest;
+import java.util.Date;
 
 @Component
 public class JwtTokenProvider {
 
-	@Value("${security.jwt.token.secret-key:JWTSuperSecretKey}")
+	@Value("${security.jwt.token.secret-key}")
 	private String jwtSecret;
 
-	@Value("${security.jwt.token.expire-length:360000}")
+	@Value("${security.jwt.token.expire-length}")
 	private long jwtExpirationInMs;
 
 	private SignatureAlgorithm SIGNATURE_ALGORITHM = SignatureAlgorithm.HS512;
@@ -33,7 +28,7 @@ public class JwtTokenProvider {
 	Date expiryDate = new Date(dateNow.getTime() + jwtExpirationInMs);
 
 	@Autowired
-	private UserDetailsService userDetailsService;
+	CustomUserDetailsService customUserDetailsService;
 
 	public String getEmailFromToken(String token) {
 		String email;
@@ -74,7 +69,7 @@ public class JwtTokenProvider {
 	}
 
 	public Authentication getAuthentication(String token) {
-		UserDetails userDetails = this.userDetailsService.loadUserByUsername(getEmailFromToken(token));
+		UserDetails userDetails = this.customUserDetailsService.loadUserByUsername(getEmailFromToken(token));
 		return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
 	}
 

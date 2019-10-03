@@ -6,6 +6,12 @@ table caption {
   padding: 0.5em 0;
 }
 
+table,
+th,
+td {
+  border: 1px solid rgb(179, 173, 173);
+}
+
 @media screen and (max-width: 767px) {
   table caption {
     border-bottom: 1px solid #ddd;

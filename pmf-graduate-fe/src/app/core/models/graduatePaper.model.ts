@@ -21,8 +21,8 @@ export class GraduatePaper {
   holdingData: string;
   note: string;
   excerpt: string;
-  acceptedByScientificBoard: Date;
-  defendedOn: Date;
+  acceptedByScientificBoard: any;
+  defendedOn: any;
   president: string;
   memberFirst: string;
   memberSecond: string;

@@ -2,17 +2,13 @@ package com.pmfgraduate.service.impl;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+import com.pmfgraduate.dto.*;
 import org.apache.commons.io.IOUtils;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,12 +29,6 @@ import com.mongodb.MapReduceCommand;
 import com.mongodb.MapReduceOutput;
 import com.mongodb.MongoClient;
 import com.mongodb.client.gridfs.model.GridFSFile;
-import com.pmfgraduate.dto.FileResponseDTO;
-import com.pmfgraduate.dto.GraduatePaperListDTO;
-import com.pmfgraduate.dto.MentorReportDTO;
-import com.pmfgraduate.dto.PdfFileDTO;
-import com.pmfgraduate.dto.TopMentorsDTO;
-import com.pmfgraduate.dto.TopMentorsListDTO;
 import com.pmfgraduate.exception.PmfGraduateException;
 import com.pmfgraduate.mapper.GraduatePaperMapper;
 import com.pmfgraduate.model.GraduatePaper;
@@ -100,6 +90,8 @@ public class GraduatePaperServiceImpl implements GraduatePaperService {
 			graduatePaperListDTO.getGraduatePapers().add(graduatePaperMapper.map(graduatePaper));
 		});
 
+		List<GraduatePaperDTO> graduatePaperDTOS = graduatePaperListDTO.getGraduatePapers().stream().sorted(Comparator.comparing(GraduatePaperDTO::getPublicationYear).thenComparing(GraduatePaperDTO::getId).reversed()).collect(Collectors.toList());
+		graduatePaperListDTO.setGraduatePapers(graduatePaperDTOS);
 		return graduatePaperListDTO;
 	}
 

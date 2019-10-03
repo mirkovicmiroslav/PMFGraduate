@@ -48,7 +48,7 @@ public class UserServiceImpl implements UserService {
 
 			return new JwtAuthenticationResponseDTO(jwt);
 		} catch (BadCredentialsException e) {
-			throw new PmfGraduateException(HttpStatus.BAD_REQUEST, "Ne ispravna lozinka.");
+			throw new PmfGraduateException(HttpStatus.BAD_REQUEST, "Neispravna e-mail adresa ili lozinka.");
 		}
 	}
 

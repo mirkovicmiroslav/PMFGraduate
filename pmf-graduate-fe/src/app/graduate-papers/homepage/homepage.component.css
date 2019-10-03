@@ -1,6 +1,6 @@
 .container-fluid {
   margin-left: 11.5%;
-  margin-right: 10%;
+  width: auto;
 }
 
 .modal-lg {
@@ -32,9 +32,33 @@
   border-radius: 0;
 }
 .new {
-  margin-right: 6%;
   margin-top: 1.5%;
+  margin-right: 2.5%;
 }
 .col-sm-3 {
   margin-bottom: 1%;
+}
+
+.container {
+  position: relative;
+  text-align: center;
+  color: #3d4e5e;
+}
+
+.card {
+  width: 100%;
+}
+
+.top {
+  position: absolute;
+  top: 36%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.centered {
+  position: absolute;
+  top: 65%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }

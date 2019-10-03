@@ -11,8 +11,8 @@ import { Router } from "@angular/router";
 })
 export class AddGraduatePaperComponent implements OnInit {
   graduatePaper: GraduatePaper = new GraduatePaper();
-  pdf;
-  file;
+  pdf: any;
+  file: any;
 
   constructor(
     private adminService: AdminManagementService,
@@ -22,7 +22,7 @@ export class AddGraduatePaperComponent implements OnInit {
 
   ngOnInit() {}
 
-  onFileSelected(event) {
+  onFileSelected(event: any) {
     this.file = event.target.files[0];
   }
 
@@ -32,15 +32,16 @@ export class AddGraduatePaperComponent implements OnInit {
         this.graduatePaper.pdfFile = response.fileId;
         this.adminService.saveGraduatePaper(this.graduatePaper).subscribe(
           response => {
+            this.toastr.success("Uspešno dodat diplomski rad.");
             this.router.navigate(["/"]);
           },
           error => {
-            this.toastr.error("Failed!");
+            this.toastr.error(error.error);
           }
         );
       },
       error => {
-        this.toastr.error("Failed to upload file");
+        this.toastr.error(error.error);
       }
     );
   }

@@ -33,7 +33,6 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
-
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
@@ -76,6 +75,13 @@
 			<version>6.9.0</version>
 		</dependency>
 
+		<dependency>
+			<groupId>local.jasperFontOverrides</groupId>
+			<artifactId>local.jasperFontOverrides</artifactId>
+			<version>1.0</version>
+			<scope>system</scope>
+			<systemPath>${basedir}/src/main/resources/jasperreports/fonts/tahoma.jar</systemPath>
+		</dependency>
 	</dependencies>
 
 	<build>
